@@ -2,11 +2,12 @@ import type { IDBPDatabase } from "idb"
 import type { Hue } from "../design/sewandso/index.d.ts"
 import { domains, type DomainId } from "../pricing/domains/index.ts"
 import { feePresets } from "../pricing/fees.ts"
+import { applyMerge, exportBackup, previewMerge, type Backup, type Counts } from "./backup.ts"
 import { openDb, seededChecklist, type ChecklistItem, type CoinvoiceSchema, type Project, type Settings } from "./db.ts"
 import { live, newRecord, softDelete, touch, type Saved } from "./records.ts"
 
 export type ProjectFields = Omit<Project, keyof Saved>
-export type SettingsFields = Omit<Settings, "updatedAt">
+export type SettingsFields = Omit<Settings, "updatedAt" | "lastBackupAt">
 
 const [, , , cashOrDirect] = feePresets
 const seedOrder = seededChecklist.map((item) => item.id)
@@ -35,6 +36,7 @@ export function createStore(open: () => Promise<IDBPDatabase<CoinvoiceSchema>> =
   const db = () => (opening ??= open())
   const listeners = new Set<() => void>()
   let version = 0
+  let merges = 0
 
   function changed() {
     version += 1
@@ -61,6 +63,7 @@ export function createStore(open: () => Promise<IDBPDatabase<CoinvoiceSchema>> =
       }
     },
     version: () => version,
+    merges: () => merges,
 
     async close() {
       const closing = opening
@@ -140,6 +143,29 @@ export function createStore(open: () => Promise<IDBPDatabase<CoinvoiceSchema>> =
       await tx.store.put(touch({ ...settings, ...patch }, now()), "settings")
       await tx.done
       changed()
+    },
+
+    async backup(): Promise<Backup> {
+      return exportBackup(await db(), now())
+    },
+
+    async markBackupSent() {
+      const tx = (await db()).transaction("settings", "readwrite")
+      const settings = found(await tx.store.get("settings"), "the seeded settings record")
+      await tx.store.put({ ...settings, lastBackupAt: now() }, "settings")
+      await tx.done
+      changed()
+    },
+
+    async previewMerge(backup: Backup): Promise<Counts> {
+      return previewMerge(await db(), backup)
+    },
+
+    async merge(backup: Backup): Promise<Counts> {
+      const counts = await applyMerge(await db(), backup)
+      merges += 1
+      changed()
+      return counts
     },
   }
 }

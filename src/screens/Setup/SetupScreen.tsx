@@ -1,15 +1,17 @@
 export function SetupScreen() {
   return (
     <>
-      <h1>Setup</h1>
-      <section>
-        <h2>Settings</h2>
+      <header className="sas-panel">
+        <h1 className="sas-display">Setup</h1>
+      </header>
+      <section className="sas-panel">
+        <h2 className="sas-title">Settings</h2>
       </section>
-      <section>
-        <h2>Backup</h2>
+      <section className="sas-panel">
+        <h2 className="sas-title">Backup</h2>
       </section>
-      <section>
-        <h2>Checklist</h2>
+      <section className="sas-panel">
+        <h2 className="sas-title">Checklist</h2>
       </section>
     </>
   )

@@ -1,13 +1,15 @@
 export function BuildScreen({ projectId }: { projectId: string }) {
   return (
     <>
-      <h1>Build</h1>
-      <p>Project {projectId}</p>
-      <section>
-        <h2>Stages</h2>
+      <header className="sas-panel sas-stack sas-stack--tight">
+        <h1 className="sas-display">Build</h1>
+        <p>Project {projectId}</p>
+      </header>
+      <section className="sas-panel">
+        <h2 className="sas-title">Stages</h2>
       </section>
-      <section>
-        <h2>Pattern</h2>
+      <section className="sas-panel">
+        <h2 className="sas-title">Pattern</h2>
       </section>
     </>
   )

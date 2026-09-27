@@ -9,10 +9,12 @@ const kindHeadings: Record<PrintKind, string> = {
 export function PrintScreen({ documentId, kind }: { documentId: string; kind: PrintKind }) {
   return (
     <>
-      <h1>Print</h1>
-      <p>Document {documentId}</p>
-      <section>
-        <h2>{kindHeadings[kind]}</h2>
+      <header className="sas-panel sas-stack sas-stack--tight">
+        <h1 className="sas-display">Print</h1>
+        <p>Document {documentId}</p>
+      </header>
+      <section className="sas-panel">
+        <h2 className="sas-title">{kindHeadings[kind]}</h2>
       </section>
     </>
   )

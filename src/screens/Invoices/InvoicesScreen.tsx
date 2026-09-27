@@ -1,12 +1,14 @@
 export function InvoicesScreen() {
   return (
     <>
-      <h1>Invoices</h1>
-      <section>
-        <h2>Documents</h2>
+      <header className="sas-panel">
+        <h1 className="sas-display">Invoices</h1>
+      </header>
+      <section className="sas-panel">
+        <h2 className="sas-title">Documents</h2>
       </section>
-      <section>
-        <h2>Quarter totals</h2>
+      <section className="sas-panel">
+        <h2 className="sas-title">Quarter totals</h2>
       </section>
     </>
   )

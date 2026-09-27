@@ -1,10 +1,9 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "idb"
+import type { Hue } from "../design/sewandso/index.d.ts"
 import type { Cents, Percent } from "../money.ts"
 import type { DomainId, StageTemplate } from "../pricing/domains/index.ts"
 import type { FeePreset } from "../pricing/fees.ts"
 import type { Saved } from "./records.ts"
-
-export type Hue = "rose" | "madder" | "marigold" | "fern" | "teal" | "cornflower" | "plum"
 
 export type MaterialLine =
   | { kind: "stock"; itemId: string; qty: number; unit: string; frozenCost?: Cents }
@@ -51,7 +50,7 @@ export interface CoinvoiceSchema extends DBSchema {
 // real edit must not look newer than that edit when backups merge by updatedAt.
 const seededAt = "2026-09-26T00:00:00.000Z"
 
-const seededChecklist: ChecklistItem[] = [
+export const seededChecklist: ChecklistItem[] = [
   {
     id: "seed-sellers-permit",
     text: "Get a California seller's permit from CDTFA.",

@@ -4,7 +4,7 @@ export function newRecord<T extends object>(fields: T, now: string): T & Saved {
   return { ...fields, id: crypto.randomUUID(), updatedAt: now }
 }
 
-export function touch<T extends Saved>(record: T, now: string): T {
+export function touch<T extends { updatedAt: string }>(record: T, now: string): T {
   return { ...record, updatedAt: now }
 }
 

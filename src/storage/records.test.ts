@@ -32,3 +32,8 @@ test("live drops deleted records and keeps the rest in order", () => {
   ]
   expect(live(records).map((record) => record.id)).toEqual(["c", "a"])
 })
+
+test("touch also stamps a record with no id, like the settings", () => {
+  const settings = { updatedAt: created, taxRate: 10.5 }
+  expect(touch(settings, later)).toStrictEqual({ updatedAt: later, taxRate: 10.5 })
+})

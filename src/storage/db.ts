@@ -2,6 +2,7 @@ import { openDB, type DBSchema, type IDBPDatabase } from "idb"
 import type { Hue } from "../design/sewandso/index.d.ts"
 import type { Cents, Percent } from "../money.ts"
 import type { DomainId, StageTemplate } from "../pricing/domains/index.ts"
+import type { CrossConversion } from "../inventory/units.ts"
 import type { FeePreset } from "../pricing/fees.ts"
 import type { Saved } from "./records.ts"
 
@@ -29,6 +30,33 @@ export type Project = Saved & {
   timeLogs: { stage: string; start: string; end?: string }[]
 }
 
+export type InventoryItem = Saved & {
+  name: string
+  category: string
+  domain: DomainId
+  unit: string
+  crossConversion?: CrossConversion
+}
+
+export type Purchase = Saved & {
+  itemId: string
+  receiptId: string
+  date: string
+  vendor: string
+  qty: number
+  unit: string
+  landedCost: Cents
+}
+
+export type StockUse = Saved & {
+  itemId: string
+  projectId?: string
+  date: string
+  qty: number
+  unit: string
+  reason: "build" | "adjustment"
+}
+
 export type ChecklistItem = Saved & { text: string; why: string; done: boolean; seeded: boolean }
 
 export type Settings = {
@@ -44,6 +72,9 @@ export interface CoinvoiceSchema extends DBSchema {
   projects: { key: string; value: Project }
   checklist: { key: string; value: ChecklistItem }
   settings: { key: "settings"; value: Settings }
+  items: { key: string; value: InventoryItem }
+  purchases: { key: string; value: Purchase }
+  stockUses: { key: string; value: StockUse }
 }
 
 const beforeAnyEdit = "2026-09-26T00:00:00.000Z"
@@ -80,13 +111,21 @@ const defaultSettings: Settings = {
 }
 
 export async function openDb(): Promise<IDBPDatabase<CoinvoiceSchema>> {
-  const db = await openDB<CoinvoiceSchema>("coinvoice", 1, {
+  const db = await openDB<CoinvoiceSchema>("coinvoice", 2, {
     upgrade(db, oldVersion) {
       if (oldVersion < 1) {
         db.createObjectStore("projects", { keyPath: "id" })
         db.createObjectStore("checklist", { keyPath: "id" })
         db.createObjectStore("settings")
       }
+      if (oldVersion < 2) {
+        db.createObjectStore("items", { keyPath: "id" })
+        db.createObjectStore("purchases", { keyPath: "id" })
+        db.createObjectStore("stockUses", { keyPath: "id" })
+      }
+    },
+    blocking() {
+      db.close()
     },
   })
   await seed(db)

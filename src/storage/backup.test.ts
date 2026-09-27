@@ -44,7 +44,7 @@ const cards: ChecklistItem = {
 }
 
 function stores(fields: Partial<BackupStores> = {}): BackupStores {
-  return { projects: [], checklist: [], settings: [settings()], ...fields }
+  return { projects: [], checklist: [], settings: [settings()], items: [], purchases: [], stockUses: [], ...fields }
 }
 
 function file(fields: Partial<BackupStores> = {}): Backup {

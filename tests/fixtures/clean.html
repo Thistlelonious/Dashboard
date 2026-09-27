@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>clean</title>
+<style>
+  body { margin: 24px; font: 18px/1.5 system-ui, sans-serif; color: #1a1a1a; background: #ffffff; }
+  button, a.btn { display: inline-flex; align-items: center; min-height: 48px; min-width: 48px; padding: 0 16px; font: inherit; border: 2px solid #1a1a1a; background: #ffffff; color: #1a1a1a; border-radius: 8px; text-decoration: none; }
+
+  .stage { position: relative; min-height: 400px; }
+  .backdrop { position: absolute; inset: 0; background: linear-gradient(45deg, #333, #999); pointer-events: none; }
+  .card { position: relative; background: #ffffff; padding: 24px; margin: 24px; border-radius: 12px; }
+  h1 { font-size: 40px; line-height: 1.05; margin: 0 0 16px; max-width: 280px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="backdrop" data-layer="back"></div>
+  <div class="card">
+    <h1><span>Tight heading</span> <span>that wraps</span> <span>onto lines</span></h1>
+    <p>Body copy at eighteen pixels on a white card, with <strong>bold words</strong> inline.</p>
+    <span class="sr">Screen reader only note</span>
+    <div class="row">
+      <button type="button">Save</button>
+      <a class="btn" href="#next">Next page</a>
+      <input type="text" value="Thread" style="font: inherit; min-height: 48px; padding: 0 12px; border: 2px solid #1a1a1a;">
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1 @@
+The SewAndSo line icons: 24px grid, 1.75 stroke, round caps and joins. These files are drawn in Light `ink` (#231c17). In pages, use `<svg data-sas-icon="name">` so the icon takes the surrounding text color.

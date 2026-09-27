@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>text-on-backdrop</title>
+<style>
+  body { margin: 24px; font: 18px/1.5 system-ui, sans-serif; color: #1a1a1a; background: #ffffff; }
+  button, a.btn { display: inline-flex; align-items: center; min-height: 48px; min-width: 48px; padding: 0 16px; font: inherit; border: 2px solid #1a1a1a; background: #ffffff; color: #1a1a1a; border-radius: 8px; text-decoration: none; }
+
+  .stage { position: relative; min-height: 300px; }
+  .backdrop { position: absolute; inset: 0; background: #fdfdfd; pointer-events: none; }
+  .content { position: relative; padding: 24px; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="backdrop" data-layer="back"></div>
+  <div class="content"><p>Words floating over the backdrop with no surface.</p></div>
+</div>
+</body>
+</html>

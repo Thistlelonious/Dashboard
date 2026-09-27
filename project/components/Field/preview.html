@@ -1,0 +1,27 @@
+<!-- @dsCard group="Forms" height=320 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Field</title></head>
+<body>
+<div class="sas-page">
+  <div class="sas-panel">
+    <div class="sas-grid">
+      <label class="sas-field">
+        <span class="sas-field__label">Name</span>
+        <span class="sas-field__control"><input class="sas-field__input" type="text" value="Wrap dress"></span>
+      </label>
+      <label class="sas-field">
+        <span class="sas-field__label">Waist</span>
+        <span class="sas-field__control"><input class="sas-field__input" type="text" inputmode="decimal" value="28"><span class="sas-field__unit">in</span></span>
+      </label>
+      <label class="sas-field" data-state="error">
+        <span class="sas-field__label">Fabric length</span>
+        <span class="sas-field__control"><input class="sas-field__input" type="text" inputmode="decimal" value="two" aria-invalid="true" aria-describedby="length-msg"><span class="sas-field__unit">yd</span></span>
+        <span class="sas-field__message" id="length-msg"><svg data-sas-icon="alert"></svg>Use a number, like 2.5</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script>SewAndSo.hydrate(document);</script>
+</body>
+</html>

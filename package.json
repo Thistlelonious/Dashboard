@@ -1,0 +1,15 @@
+{
+  "name": "sewandso-harness",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:tokens": "node --test tests/tokens.test.mjs",
+    "build:local": "node scripts/build-local.mjs",
+    "test:layout": "playwright test",
+    "test:fixtures": "playwright test tests/fixtures.spec.mjs",
+    "test": "npm run test:tokens && npm run build:local && npm run test:layout"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "v": 3,
+  "layout": "files",
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-09-27T03:17:23Z"
+  },
+  "title": "SewAndSo",
+  "namespace": "SewAndSo",
+  "libraries": [],
+  "sections": {},
+  "groups": [
+    "Backgrounds",
+    "Icons"
+  ],
+  "assetGroups": {
+    "Backgrounds": {
+      "name": "Backgrounds",
+      "tile": "l",
+      "order": [
+        "light.svg",
+        "colorful.svg",
+        "dark.svg"
+      ],
+      "files": {
+        "light.svg": {
+          "name": "light.svg",
+          "blob": "a2eecfbd8f337cd8514d22c0c999f190",
+          "size": 727,
+          "type": "image/svg+xml"
+        },
+        "colorful.svg": {
+          "name": "colorful.svg",
+          "blob": "462a0a9df1a08fb11a56f56ba179c956",
+          "size": 833,
+          "type": "image/svg+xml"
+        },
+        "dark.svg": {
+          "name": "dark.svg",
+          "blob": "b99752fd44e09b6ec903de858925b18f",
+          "size": 680,
+          "type": "image/svg+xml"
+        }
+      }
+    },
+    "Icons": {
+      "name": "Icons",
+      "tile": "xs",
+      "order": [
+        "needle.svg",
+        "spool.svg",
+        "scissors.svg",
+        "pattern.svg",
+        "tape.svg",
+        "pin.svg",
+        "button.svg",
+        "fabric.svg",
+        "iron.svg",
+        "hanger.svg",
+        "camera.svg",
+        "home.svg",
+        "plus.svg",
+        "check.svg",
+        "close.svg",
+        "arrow-right.svg",
+        "arrow-left.svg",
+        "alert.svg"
+      ],
+      "files": {
+        "needle.svg": {
+          "name": "needle.svg",
+          "blob": "711fb9392934a16ded32ba47063f18e7",
+          "size": 297,
+          "type": "image/svg+xml"
+        },
+        "spool.svg": {
+          "name": "spool.svg",
+          "blob": "8ab6022d9161aa58b16440e746883b06",
+          "size": 348,
+          "type": "image/svg+xml"
+        },
+        "scissors.svg": {
+          "name": "scissors.svg",
+          "blob": "38675d8b93ceeceb5d506568a329e072",
+          "size": 299,
+          "type": "image/svg+xml"
+        },
+        "pattern.svg": {
+          "name": "pattern.svg",
+          "blob": "27043e72bb0103d55892dd43b6d057aa",
+          "size": 284,
+          "type": "image/svg+xml"
+        },
+        "tape.svg": {
+          "name": "tape.svg",
+          "blob": "a4656aebc83330df64392fbc3352ba2e",
+          "size": 282,
+          "type": "image/svg+xml"
+        },
+        "pin.svg": {
+          "name": "pin.svg",
+          "blob": "ee26f53ee1bd0c90ddb993dd95a07348",
+          "size": 245,
+          "type": "image/svg+xml"
+        },
+        "button.svg": {
+          "name": "button.svg",
+          "blob": "8faee0a7b3d81fdfbe988e389191f0e3",
+          "size": 347,
+          "type": "image/svg+xml"
+        },
+        "fabric.svg": {
+          "name": "fabric.svg",
+          "blob": "c449cf16d1e630046b97aafea90a87b7",
+          "size": 288,
+          "type": "image/svg+xml"
+        },
+        "iron.svg": {
+          "name": "iron.svg",
+          "blob": "24f0ac2477e5b8b2c110e88167dd3266",
+          "size": 287,
+          "type": "image/svg+xml"
+        },
+        "hanger.svg": {
+          "name": "hanger.svg",
+          "blob": "85ca27482531fb8cbca493354212572a",
+          "size": 276,
+          "type": "image/svg+xml"
+        },
+        "camera.svg": {
+          "name": "camera.svg",
+          "blob": "4942dd8113c27e451ab26420c184ba57",
+          "size": 303,
+          "type": "image/svg+xml"
+        },
+        "home.svg": {
+          "name": "home.svg",
+          "blob": "4c487a707660801e16656fde729b126e",
+          "size": 240,
+          "type": "image/svg+xml"
+        },
+        "plus.svg": {
+          "name": "plus.svg",
+          "blob": "013334a985d325005361297ac83bd71f",
+          "size": 214,
+          "type": "image/svg+xml"
+        },
+        "check.svg": {
+          "name": "check.svg",
+          "blob": "7bd185e97036b66382f814ca5bbe0a01",
+          "size": 220,
+          "type": "image/svg+xml"
+        },
+        "close.svg": {
+          "name": "close.svg",
+          "blob": "599266838506bc1faa90997b769c5418",
+          "size": 218,
+          "type": "image/svg+xml"
+        },
+        "arrow-right.svg": {
+          "name": "arrow-right.svg",
+          "blob": "4ab857e2ccac8bd4a171fe8bc10f8827",
+          "size": 219,
+          "type": "image/svg+xml"
+        },
+        "arrow-left.svg": {
+          "name": "arrow-left.svg",
+          "blob": "a89bb508da3650ea91d5ff1daf56dbeb",
+          "size": 220,
+          "type": "image/svg+xml"
+        },
+        "alert.svg": {
+          "name": "alert.svg",
+          "blob": "564d04447d76184c51a216c130c5da9e",
+          "size": 282,
+          "type": "image/svg+xml"
+        }
+      }
+    }
+  },
+  "blobs": {},
+  "docs": {
+    "readme": "project/README.md",
+    "sections": []
+  },
+  "lastChange": {
+    "by": "Claude",
+    "at": "2026-09-27T03:17:23Z",
+    "via": "Claude Code",
+    "note": "First version: three themes, nine components, icons, placeholder backdrops"
+  }
+}

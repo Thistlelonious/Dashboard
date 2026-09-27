@@ -1,0 +1,123 @@
+<!-- @dsCard group="Pages" height=1500 page -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workroom</title>
+</head>
+<body>
+<div class="sas-backdrop" data-layer="back"></div>
+<div class="sas-page">
+  <header class="sas-appbar">
+    <a class="sas-appbar__brand" href="#"><svg data-sas-icon="spool"></svg>SewAndSo</a>
+    <div class="sas-appbar__end">
+      <button class="sas-button sas-button--outline sas-button--icon" type="button" aria-label="New project"><svg data-sas-icon="plus"></svg></button>
+      <div class="sas-theme-switch" role="radiogroup" aria-label="Color mode">
+        <button class="sas-theme-switch__option" type="button" role="radio" aria-checked="true" data-sas-theme="light" aria-label="Light"><span class="sas-theme-switch__disc" data-theme="light"></span></button>
+        <button class="sas-theme-switch__option" type="button" role="radio" aria-checked="false" data-sas-theme="colorful" aria-label="Colorful"><span class="sas-theme-switch__disc" data-theme="colorful"></span></button>
+        <button class="sas-theme-switch__option" type="button" role="radio" aria-checked="false" data-sas-theme="dark" aria-label="Dark"><span class="sas-theme-switch__disc" data-theme="dark"></span></button>
+      </div>
+    </div>
+  </header>
+
+  <section class="sas-panel sas-hero" data-hue="rose">
+    <div class="sas-hero__text">
+      <h1 class="sas-display">Skirt</h1>
+      <ol class="sas-stages sas-stages--lg" aria-label="Stages">
+        <li class="sas-stage" data-state="done"><span class="sas-stage__node" role="img" aria-label="Cut, done"><svg data-sas-icon="scissors"></svg></span><span class="sas-stage__thread"></span></li>
+        <li class="sas-stage" data-state="now"><span class="sas-stage__node" role="img" aria-label="Sew, in progress"><svg data-sas-icon="needle"></svg></span><span class="sas-stage__thread"></span></li>
+        <li class="sas-stage"><span class="sas-stage__node" role="img" aria-label="Press, not started"><svg data-sas-icon="iron"></svg></span><span class="sas-stage__thread"></span></li>
+        <li class="sas-stage"><span class="sas-stage__node" role="img" aria-label="Finish, not started"><svg data-sas-icon="hanger"></svg></span></li>
+      </ol>
+      <div class="sas-actions">
+        <a class="sas-button" href="#"><svg data-sas-icon="needle"></svg>Keep sewing</a>
+        <button class="sas-button sas-button--tonal sas-button--icon" type="button" aria-label="Add a photo"><svg data-sas-icon="camera"></svg></button>
+        <button class="sas-button sas-button--tonal sas-button--icon" type="button" aria-label="Open the pattern"><svg data-sas-icon="pattern"></svg></button>
+      </div>
+    </div>
+    <div class="sas-hero__art" aria-hidden="true"><svg data-sas-icon="hanger"></svg></div>
+  </section>
+
+  <nav class="sas-grid sas-grid--tiles" aria-label="Workroom">
+    <a class="sas-tile" href="#" data-hue="rose"><span class="sas-tile__art"><svg data-sas-icon="hanger" class="sas-icon--lg"></svg></span><span class="sas-tile__label">Projects</span></a>
+    <a class="sas-tile" href="#" data-hue="cornflower"><span class="sas-tile__art"><svg data-sas-icon="pattern" class="sas-icon--lg"></svg></span><span class="sas-tile__label">Patterns</span></a>
+    <a class="sas-tile" href="#" data-hue="fern"><span class="sas-tile__art"><svg data-sas-icon="fabric" class="sas-icon--lg"></svg></span><span class="sas-tile__label">Fabric</span></a>
+    <a class="sas-tile" href="#" data-hue="marigold"><span class="sas-tile__art"><svg data-sas-icon="button" class="sas-icon--lg"></svg></span><span class="sas-tile__label">Notions</span></a>
+    <a class="sas-tile" href="#" data-hue="teal"><span class="sas-tile__art"><svg data-sas-icon="tape" class="sas-icon--lg"></svg></span><span class="sas-tile__label">Measure</span></a>
+    <a class="sas-tile" href="#" data-hue="plum"><span class="sas-tile__art"><svg data-sas-icon="camera" class="sas-icon--lg"></svg></span><span class="sas-tile__label">Photos</span></a>
+  </nav>
+
+  <div class="sas-grid">
+    <article class="sas-card" data-hue="cornflower">
+      <div class="sas-card__art" aria-hidden="true"><svg data-sas-icon="spool"></svg></div>
+      <div class="sas-card__body">
+        <h2 class="sas-card__title">Messenger bag</h2>
+        <ol class="sas-stages" aria-label="Stages">
+          <li class="sas-stage" data-state="done"><span class="sas-stage__node" role="img" aria-label="Cut, done"><svg data-sas-icon="scissors"></svg></span><span class="sas-stage__thread"></span></li>
+          <li class="sas-stage" data-state="done"><span class="sas-stage__node" role="img" aria-label="Sew, done"><svg data-sas-icon="needle"></svg></span><span class="sas-stage__thread"></span></li>
+          <li class="sas-stage" data-state="done"><span class="sas-stage__node" role="img" aria-label="Press, done"><svg data-sas-icon="iron"></svg></span><span class="sas-stage__thread"></span></li>
+          <li class="sas-stage" data-state="now"><span class="sas-stage__node" role="img" aria-label="Finish, in progress"><svg data-sas-icon="hanger"></svg></span></li>
+        </ol>
+      </div>
+    </article>
+    <article class="sas-card" data-hue="plum">
+      <div class="sas-card__art" aria-hidden="true"><svg data-sas-icon="tape"></svg></div>
+      <div class="sas-card__body">
+        <h2 class="sas-card__title">Tailoring</h2>
+        <ol class="sas-stages" aria-label="Stages">
+          <li class="sas-stage" data-state="now"><span class="sas-stage__node" role="img" aria-label="Cut, in progress"><svg data-sas-icon="scissors"></svg></span><span class="sas-stage__thread"></span></li>
+          <li class="sas-stage"><span class="sas-stage__node" role="img" aria-label="Sew, not started"><svg data-sas-icon="needle"></svg></span><span class="sas-stage__thread"></span></li>
+          <li class="sas-stage"><span class="sas-stage__node" role="img" aria-label="Press, not started"><svg data-sas-icon="iron"></svg></span><span class="sas-stage__thread"></span></li>
+          <li class="sas-stage"><span class="sas-stage__node" role="img" aria-label="Finish, not started"><svg data-sas-icon="hanger"></svg></span></li>
+        </ol>
+      </div>
+    </article>
+    <article class="sas-card" data-hue="fern">
+      <div class="sas-card__art" aria-hidden="true"><svg data-sas-icon="fabric"></svg></div>
+      <div class="sas-card__body">
+        <h2 class="sas-card__title">Student choice</h2>
+        <ol class="sas-stages" aria-label="Stages">
+          <li class="sas-stage" data-state="done"><span class="sas-stage__node" role="img" aria-label="Cut, done"><svg data-sas-icon="scissors"></svg></span><span class="sas-stage__thread"></span></li>
+          <li class="sas-stage" data-state="now"><span class="sas-stage__node" role="img" aria-label="Sew, in progress"><svg data-sas-icon="needle"></svg></span><span class="sas-stage__thread"></span></li>
+          <li class="sas-stage"><span class="sas-stage__node" role="img" aria-label="Press, not started"><svg data-sas-icon="iron"></svg></span><span class="sas-stage__thread"></span></li>
+          <li class="sas-stage"><span class="sas-stage__node" role="img" aria-label="Finish, not started"><svg data-sas-icon="hanger"></svg></span></li>
+        </ol>
+      </div>
+    </article>
+  </div>
+
+  <section class="sas-panel sas-stack" data-hue="teal" aria-labelledby="new-title">
+    <h2 class="sas-title" id="new-title">New project</h2>
+    <div class="sas-grid">
+      <label class="sas-field">
+        <span class="sas-field__label">Name</span>
+        <span class="sas-field__control"><input class="sas-field__input" type="text" value="Wrap dress"></span>
+      </label>
+      <label class="sas-field" data-state="error">
+        <span class="sas-field__label">Fabric length</span>
+        <span class="sas-field__control"><input class="sas-field__input" type="text" inputmode="decimal" value="two" aria-invalid="true" aria-describedby="length-msg"><span class="sas-field__unit">yd</span></span>
+        <span class="sas-field__message" id="length-msg"><svg data-sas-icon="alert"></svg>Use a number, like 2.5</span>
+      </label>
+    </div>
+    <div class="sas-stack sas-stack--tight">
+      <span class="sas-field__label" id="thread-label">Thread</span>
+      <div class="sas-swatches" role="radiogroup" aria-labelledby="thread-label">
+        <button class="sas-swatch" type="button" role="radio" aria-checked="true" data-value="rose" data-hue="rose" aria-label="Rose"><svg data-sas-icon="check"></svg></button>
+        <button class="sas-swatch" type="button" role="radio" aria-checked="false" data-value="madder" data-hue="madder" aria-label="Madder"><svg data-sas-icon="check"></svg></button>
+        <button class="sas-swatch" type="button" role="radio" aria-checked="false" data-value="marigold" data-hue="marigold" aria-label="Marigold"><svg data-sas-icon="check"></svg></button>
+        <button class="sas-swatch" type="button" role="radio" aria-checked="false" data-value="fern" data-hue="fern" aria-label="Fern"><svg data-sas-icon="check"></svg></button>
+        <button class="sas-swatch" type="button" role="radio" aria-checked="false" data-value="teal" data-hue="teal" aria-label="Teal"><svg data-sas-icon="check"></svg></button>
+        <button class="sas-swatch" type="button" role="radio" aria-checked="false" data-value="cornflower" data-hue="cornflower" aria-label="Cornflower"><svg data-sas-icon="check"></svg></button>
+        <button class="sas-swatch" type="button" role="radio" aria-checked="false" data-value="plum" data-hue="plum" aria-label="Plum"><svg data-sas-icon="check"></svg></button>
+      </div>
+    </div>
+    <div class="sas-actions">
+      <button class="sas-button" type="button"><svg data-sas-icon="plus"></svg>Start project</button>
+      <button class="sas-button sas-button--outline" type="button">Not now</button>
+    </div>
+  </section>
+</div>
+<script>SewAndSo.hydrate(document);</script>
+</body>
+</html>

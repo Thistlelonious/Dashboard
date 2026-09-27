@@ -1,5 +1,6 @@
 import "fake-indexeddb/auto"
 import { IDBFactory } from "fake-indexeddb"
+import { openDB } from "idb"
 import { afterEach, beforeEach, expect, test, vi } from "vitest"
 import { domains } from "../pricing/domains/index.ts"
 import { openDb } from "./db.ts"
@@ -134,4 +135,26 @@ test("every write tells subscribers, and they stop hearing after unsubscribing",
   stop()
   await store.deleteProject(skirt.id)
   expect(heard).toHaveBeenCalledTimes(4)
+})
+
+test("an upgrade held up by an older open copy waits, then finishes once that copy closes", async () => {
+  const older = await openDB("coinvoice", 1, {
+    upgrade(db) {
+      db.createObjectStore("projects", { keyPath: "id" })
+      db.createObjectStore("checklist", { keyPath: "id" })
+      db.createObjectStore("settings")
+    },
+  })
+  const projects = store.projects()
+  await vi.waitFor(() => expect(store.status()).toBe("waiting"))
+  older.close()
+  expect(await projects).toStrictEqual([])
+  expect(store.status()).toBe("ready")
+})
+
+test("a copy that a newer version replaces says so", async () => {
+  await store.projects()
+  const newer = await openDB("coinvoice", 3)
+  expect(store.status()).toBe("replaced")
+  newer.close()
 })

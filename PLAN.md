@@ -38,6 +38,7 @@ On your phone, open the address in Chrome or Samsung Internet and add it to the 
 - The manifest's `theme_color` and `background_color` are SewAndSo's Light `canvas`, read from the synced `tokens.css`.
 - `npm run icons` renders SewAndSo's spool in `on-primary` on a Light `primary` square, at 192px and 512px, into `public/icons/`. The spool fills the middle 60%, so the same file also serves as the maskable icon.
 - The service worker precaches the built files, updates itself, and takes over open pages right away. It caches Google Fonts as they load. The first visit loads Figtree before the worker is running, so once the worker takes over, the app fetches Figtree again to put it in the cache. Text keeps its font offline from the first visit on.
+- A version that changes the database waits for older copies of the app to let go of it. While it waits, every screen says to close coinvoice's other tabs and windows, including the installed app, and it finishes on its own once they close. An older copy that a newer version replaces says so and offers a reload.
 - The dev server and `npm run preview` also serve the app under `/coinvoice/`, such as `http://localhost:5173/coinvoice/`.
 
 ### Moving data between devices

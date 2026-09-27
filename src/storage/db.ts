@@ -110,7 +110,9 @@ const defaultSettings: Settings = {
   estimateValidDays: 30,
 }
 
-export async function openDb(): Promise<IDBPDatabase<CoinvoiceSchema>> {
+export type DbEvents = { blocked?: () => void; replaced?: () => void }
+
+export async function openDb(events: DbEvents = {}): Promise<IDBPDatabase<CoinvoiceSchema>> {
   const db = await openDB<CoinvoiceSchema>("coinvoice", 2, {
     upgrade(db, oldVersion) {
       if (oldVersion < 1) {
@@ -124,8 +126,12 @@ export async function openDb(): Promise<IDBPDatabase<CoinvoiceSchema>> {
         db.createObjectStore("stockUses", { keyPath: "id" })
       }
     },
+    blocked() {
+      events.blocked?.()
+    },
     blocking() {
       db.close()
+      events.replaced?.()
     },
   })
   await seed(db)

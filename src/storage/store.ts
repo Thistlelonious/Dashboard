@@ -5,6 +5,7 @@ import { feePresets } from "../pricing/fees.ts"
 import { applyMerge, exportBackup, previewMerge, type Backup, type Counts } from "./backup.ts"
 import {
   openDb,
+  type DbEvents,
   seededChecklist,
   type ChecklistItem,
   type CoinvoiceSchema,
@@ -51,16 +52,31 @@ function found<T>(value: T | undefined, what: string): T {
   return value
 }
 
-export function createStore(open: () => Promise<IDBPDatabase<CoinvoiceSchema>> = openDb) {
+export type StorageStatus = "ready" | "waiting" | "replaced"
+
+export function createStore(open: (events: DbEvents) => Promise<IDBPDatabase<CoinvoiceSchema>> = openDb) {
   let opening: Promise<IDBPDatabase<CoinvoiceSchema>> | undefined
-  const db = () => (opening ??= open())
+  let status: StorageStatus = "ready"
+  const setStatus = (next: StorageStatus) => {
+    status = next
+    notify()
+  }
+  const db = () =>
+    (opening ??= open({ blocked: () => setStatus("waiting"), replaced: () => setStatus("replaced") }).then((opened) => {
+      if (status === "waiting") setStatus("ready")
+      return opened
+    }))
   const listeners = new Set<() => void>()
   let version = 0
   let merges = 0
 
+  function notify() {
+    for (const listener of listeners) listener()
+  }
+
   function changed() {
     version += 1
-    for (const listener of listeners) listener()
+    notify()
   }
 
   async function change<Name extends "projects" | "checklist">(
@@ -83,6 +99,7 @@ export function createStore(open: () => Promise<IDBPDatabase<CoinvoiceSchema>> =
       }
     },
     version: () => version,
+    status: () => status,
     merges: () => merges,
 
     async close() {

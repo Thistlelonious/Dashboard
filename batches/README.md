@@ -10,7 +10,7 @@ Build these in the order of this table with `/build-batch <n>`. The SewAndSo bat
 | 2 | `b2-pricing-core.md` | Done | The calculator gives the worked-example minutes and prices. |
 | 3 | `b3-projects-and-setup.md` | Done | Projects, settings, and the checklist survive a reload. |
 | 4 | `b4-backup-merge.md` | Done | A backup merges into a second browser, and the newer edit wins. |
-| 5 | `b5-install-and-deploy.md` | Not started | The GitHub Pages address installs on your phone and works offline. |
+| 5 | `b5-install-and-deploy.md` | Done | The GitHub Pages address installs on your phone and works offline. |
 | 6 | `b6-inventory-ledger.md` | Not started | Purchases and adjustments give the right stock and average cost. |
 | 7 | `b7-receipt-import.md` | Not started | A receipt imports with exact landed costs, and a second import changes nothing. |
 | 8 | `b8-project-materials.md` | Not started | Projects draw from stock, and "Mark built" uses it up. |

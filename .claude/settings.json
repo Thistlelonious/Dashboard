@@ -1,0 +1,24 @@
+{
+  "extraKnownMarketplaces": {
+    "pstack-claude": {
+      "source": {
+        "source": "github",
+        "repo": "michael-denyer/pstack-claude"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "pstack@pstack-claude": true
+  },
+  "permissions": {
+    "additionalDirectories": ["../SewAndSo", "../Files/Patterns", "../Files/Receipts-and-Sourcing", "../Files/Backups"],
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Read(../SewAndSo/**)",
+      "Read(../Files/Patterns/**)",
+      "Read(../Files/Receipts-and-Sourcing/**)",
+      "Read(../Files/Backups/**)"
+    ]
+  }
+}

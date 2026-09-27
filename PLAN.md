@@ -339,6 +339,7 @@ Pies stay outside SewAndSo's icon set. They show a plain stage list, and a pie p
 | Rule | Why SewAndSo can't cover it |
 |---|---|
 | `.icon-slot { display: contents; }` | `Icon.tsx` puts the SVG from `SewAndSo.icon()` inside a React `<span>`. SewAndSo styles the SVG and knows nothing of that wrapper, so the wrapper drops out of layout. |
+| `.check-item`, a two-column grid of a checkbox and its text, with the checkbox sized to `--target` and filled with `--primary` | SewAndSo has no checkbox. The Setup checklist needs one, so it uses a native checkbox at the tap-target size, and the text wraps beside it instead of dropping below it. |
 
 ## Setup checklist
 

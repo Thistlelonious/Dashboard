@@ -2,7 +2,7 @@ import { basisPoints, toPercent } from "../../money.ts"
 import type { Settings } from "../../storage/db.ts"
 import type { SettingsFields } from "../../storage/store.ts"
 
-export type SettingName = keyof Omit<SettingsFields, "lastBackupAt">
+export type SettingName = keyof SettingsFields
 
 type Parsed = { ok: true; patch: Partial<SettingsFields> } | { ok: false; message: string }
 

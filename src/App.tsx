@@ -2,6 +2,9 @@ import { type JSX, useEffect, useRef, useSyncExternalStore } from "react"
 import { Icon } from "./design/Icon.tsx"
 import { ThemeSwitch } from "./design/ThemeSwitch.tsx"
 import { parseRoute, type Route } from "./routes.ts"
+import { backupReminder } from "./storage/backup.ts"
+import { store } from "./storage/store.ts"
+import { useStored } from "./storage/useStored.ts"
 import { BuildScreen } from "./screens/Build/BuildScreen.tsx"
 import { DocumentScreen } from "./screens/Document/DocumentScreen.tsx"
 import { HomeScreen } from "./screens/Home/HomeScreen.tsx"
@@ -40,8 +43,29 @@ export function App() {
           <ThemeSwitch />
         </div>
       </header>
-      <main className="sas-stack">{screenFor(parseRoute(hash))}</main>
+      <main className="sas-stack">
+        <BackupReminder />
+        {screenFor(parseRoute(hash))}
+      </main>
     </div>
+  )
+}
+
+function BackupReminder() {
+  const settings = useStored(() => store.settings(), "settings")
+  const reminder = settings === undefined ? null : backupReminder(settings.lastBackupAt, new Date())
+  if (reminder === null) return null
+  return (
+    <aside className="sas-panel sas-actions" data-print="hide">
+      <p className="sas-subheading sas-actions">
+        <Icon name="alert" />
+        {reminder}
+      </p>
+      <a className="sas-button" href="#/setup">
+        <Icon name="send" />
+        Back up
+      </a>
+    </aside>
   )
 }
 

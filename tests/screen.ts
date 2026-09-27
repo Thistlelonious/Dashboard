@@ -68,3 +68,46 @@ export async function stageRows(page: Page) {
 export async function total(page: Page) {
   return stageTable(page).locator("tfoot td").nth(1).textContent()
 }
+
+export async function reloadAfterSaves(page: Page) {
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve, reject) => {
+        const request = indexedDB.open("coinvoice")
+        request.onerror = () => reject(request.error)
+        request.onsuccess = () => {
+          const db = request.result
+          const tx = db.transaction([...db.objectStoreNames])
+          tx.oncomplete = () => {
+            db.close()
+            resolve()
+          }
+          tx.onerror = () => reject(tx.error)
+        }
+      }),
+  )
+  await page.reload()
+}
+
+export async function createProject(page: Page, name: string, craft: string, color: string) {
+  await fill(page, { Name: name })
+  await choose(page, craft, color)
+  await page.getByRole("button", { name: "Start project" }).click()
+  await expect(card(page, name)).toBeVisible()
+  await expect(field(page, "Name").locator("input")).toHaveValue("")
+}
+
+export function card(page: Page, name: string) {
+  return page.getByRole("link", { name, exact: true })
+}
+
+export async function goHome(page: Page) {
+  await page.getByRole("link", { name: "coinvoice" }).click()
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Home")
+}
+
+export async function openCard(page: Page, name: string) {
+  await card(page, name).click()
+  await expect(page).toHaveURL(/#\/price\/[0-9a-f-]{36}$/)
+  await expect(page.locator(".sas-heading", { hasText: name })).toBeVisible()
+}

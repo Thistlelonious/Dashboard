@@ -4,11 +4,12 @@ import { Icon } from "../../design/Icon.tsx"
 import type { ChecklistItem, Settings } from "../../storage/db.ts"
 import { store } from "../../storage/store.ts"
 import { useStored } from "../../storage/useStored.ts"
+import { BackupSection } from "./BackupSection.tsx"
 import { settingFields, type SettingField, type SettingName } from "./settings.ts"
 
 export function SetupScreen() {
-  const settings = useStored(() => store.settings(), "settings")
-  const checklist = useStored(() => store.checklist(), "checklist")
+  const settings = useStored(async () => ({ merges: store.merges(), record: await store.settings() }), "settings")
+  const checklist = useStored(async () => ({ merges: store.merges(), items: await store.checklist() }), "checklist")
   return (
     <>
       <header className="sas-panel">
@@ -16,16 +17,14 @@ export function SetupScreen() {
       </header>
       <section className="sas-panel sas-stack">
         <h2 className="sas-title">Settings</h2>
-        {settings !== undefined && <SettingsForm settings={settings} />}
+        {settings !== undefined && <SettingsForm key={settings.merges} settings={settings.record} />}
       </section>
-      <section className="sas-panel">
-        <h2 className="sas-title">Backup</h2>
-      </section>
+      {settings !== undefined && <BackupSection settings={settings.record} />}
       <section className="sas-panel sas-stack">
         <h2 className="sas-title">Checklist</h2>
         {checklist !== undefined && (
-          <ul className="sas-stack">
-            {checklist.map((item) => (
+          <ul className="sas-stack" key={checklist.merges}>
+            {checklist.items.map((item) => (
               <ChecklistRow key={item.id} item={item} />
             ))}
           </ul>

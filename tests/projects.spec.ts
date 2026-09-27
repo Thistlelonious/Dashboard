@@ -1,5 +1,19 @@
 import { expect, type Locator, type Page, test } from "@playwright/test"
-import { choose, expectCleanLayout, field, fill, open, stageRows, themes, total } from "./screen.ts"
+import {
+  card,
+  choose,
+  createProject,
+  expectCleanLayout,
+  field,
+  fill,
+  goHome,
+  open,
+  openCard,
+  reloadAfterSaves,
+  stageRows,
+  themes,
+  total,
+} from "./screen.ts"
 
 function iconNames(svgs: Locator) {
   return svgs.evaluateAll((all) =>
@@ -14,46 +28,8 @@ function iconNames(svgs: Locator) {
   )
 }
 
-async function reloadAfterSaves(page: Page) {
-  await page.evaluate(
-    () =>
-      new Promise<void>((resolve, reject) => {
-        const request = indexedDB.open("coinvoice")
-        request.onerror = () => reject(request.error)
-        request.onsuccess = () => {
-          const db = request.result
-          const tx = db.transaction(["projects", "checklist", "settings"])
-          tx.oncomplete = () => {
-            db.close()
-            resolve()
-          }
-          tx.onerror = () => reject(tx.error)
-        }
-      }),
-  )
-  await page.reload()
-}
-
-async function createProject(page: Page, name: string, craft: string, color: string) {
-  await fill(page, { Name: name })
-  await choose(page, craft, color)
-  await page.getByRole("button", { name: "Start project" }).click()
-  await expect(card(page, name)).toBeVisible()
-  await expect(field(page, "Name").locator("input")).toHaveValue("")
-}
-
-function card(page: Page, name: string) {
-  return page.getByRole("link", { name, exact: true })
-}
-
 function track(page: Page, name: string) {
   return card(page, name).locator("ol.sas-stages > li.sas-stage")
-}
-
-async function openCard(page: Page, name: string) {
-  await card(page, name).click()
-  await expect(page).toHaveURL(/#\/price\/[0-9a-f-]{36}$/)
-  await expect(page.locator(".sas-heading", { hasText: name })).toBeVisible()
 }
 
 async function budgets(page: Page) {
@@ -70,11 +46,6 @@ const seededTexts = [
   "Confirm your Shopify plan and card rate in Shopify admin.",
   "Give fabric suppliers a California resale certificate (CDTFA-230).",
 ]
-
-async function goHome(page: Page) {
-  await page.getByRole("link", { name: "coinvoice" }).click()
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Home")
-}
 
 test("projects are created on Home, priced, trimmed of Fit, renamed, and deleted across reloads", async ({ page }) => {
   const pageErrors: Error[] = []

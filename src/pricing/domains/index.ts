@@ -1,0 +1,22 @@
+import type { Percent } from "../../money.ts"
+import { pie } from "./pie.ts"
+import { sewing } from "./sewing.ts"
+
+export type StageTemplate = { name: string; weight: number; waitMin: number; batchable: boolean; icon?: string }
+
+export type Domain = {
+  id: "sewing" | "pie"
+  label: string
+  sellingUnit: string
+  stages: StageTemplate[]
+  allowancePct: Percent
+  estimateMaterialsLabel: string
+  estimateLaborLabel: string
+  taxable: boolean
+  complianceNotes: string[]
+  cardIcon?: string
+}
+
+export type DomainId = Domain["id"]
+
+export const domains = { sewing, pie } satisfies { [Id in DomainId]: Domain & { id: Id } }

@@ -56,15 +56,15 @@ perf-issue: claude-opus-5-5
 hillclimb: claude-opus-5-5
 judgment and prose: claude-opus-5-5
 strongest judgment: claude-opus-5-5
-how explorer: claude-opus-5-5
+how explorer: claude-sonnet-5
 how explainer: claude-opus-5-5
-why investigators: claude-opus-5-5
+why investigators: claude-sonnet-5
 why synthesizer: claude-opus-5-5
-reflect tooling: claude-opus-5-5
+reflect tooling: claude-sonnet-5
 reflect judgment, divergent, synthesizer: claude-opus-5-5
 arena runners: claude-opus-5-5, claude-sonnet-5
 arena cross-judge pool: claude-opus-5-5, claude-sonnet-5
-swarm workers: claude-opus-5-5
+swarm workers: claude-sonnet-5
 architect runners: claude-opus-5-5, claude-sonnet-5
 interrogate reviewers: claude-opus-5-5, claude-sonnet-5
 

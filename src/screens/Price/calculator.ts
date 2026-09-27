@@ -1,8 +1,10 @@
 import type { IconName } from "../../design/sewandso/index.d.ts"
 import { basisPoints, toCents, toPercent, type Cents } from "../../money.ts"
-import { domains, type DomainId } from "../../pricing/domains/index.ts"
+import { domains, type DomainId, type StageTemplate } from "../../pricing/domains/index.ts"
 import type { FeePreset } from "../../pricing/fees.ts"
 import { aimForMinutes, laborBudget, priceForMinutes, stageBudgets } from "../../pricing/pricing.ts"
+import type { Project } from "../../storage/db.ts"
+import type { ProjectFields } from "../../storage/store.ts"
 
 export type Mode = "time" | "price"
 
@@ -12,7 +14,7 @@ export type CalculatorForm = Record<FieldName, string> & {
   domain: DomainId
   mode: Mode
   fee: FeePreset
-  stagesOff: readonly string[]
+  stages: readonly StageTemplate[]
 }
 
 export type StageRow = {
@@ -74,26 +76,39 @@ function parseBatchSize(text: string): Field {
     : { kind: "bad", message: "Use a whole number, like 6" }
 }
 
+function parseFields(form: CalculatorForm): Record<FieldName, Field> {
+  return {
+    price: parseMoney(form.price),
+    minutes: parseMinutes(form.minutes),
+    materials: parseMoney(form.materials),
+    overhead: parseMoney(form.overhead),
+    wage: parseWage(form.wage),
+    margin: parseMargin(form.margin, form.fee),
+    batchSize: parseBatchSize(form.batchSize),
+  }
+}
+
 export function calculate(form: CalculatorForm): CalculatorResult {
+  const fields = parseFields(form)
   const errors: Partial<Record<FieldName, string>> = {}
-  const read = (name: FieldName, field: Field): number | undefined => {
+  const read = (name: FieldName): number | undefined => {
+    const field = fields[name]
     if (field.kind === "bad") errors[name] = field.message
     return field.kind === "ok" ? field.value : undefined
   }
 
-  const main =
-    form.mode === "time" ? read("price", parseMoney(form.price)) : read("minutes", parseMinutes(form.minutes))
-  const materials = read("materials", parseMoney(form.materials)) ?? 0
-  const overhead = read("overhead", parseMoney(form.overhead)) ?? 0
-  const wage = read("wage", parseWage(form.wage))
-  const margin = read("margin", parseMargin(form.margin, form.fee))
-  const units = read("batchSize", parseBatchSize(form.batchSize)) ?? 1
+  const main = form.mode === "time" ? read("price") : read("minutes")
+  const materials = read("materials") ?? 0
+  const overhead = read("overhead") ?? 0
+  const wage = read("wage")
+  const margin = read("margin")
+  const units = read("batchSize") ?? 1
 
   if (Object.keys(errors).length > 0) return { kind: "invalid", errors }
   if (main === undefined || wage === undefined || margin === undefined) return { kind: "incomplete" }
 
   const inputs = { fee: form.fee, materials, overhead, wage, margin }
-  const times = (totalMinutes: number) => stageTimes(form.domain, form.stagesOff, units, totalMinutes)
+  const times = (totalMinutes: number) => stageTimes(form.domain, form.stages, units, totalMinutes)
 
   if (form.mode === "price") {
     const price = priceForMinutes(inputs, main)
@@ -108,16 +123,15 @@ export function calculate(form: CalculatorForm): CalculatorResult {
 
 function stageTimes(
   domainId: DomainId,
-  stagesOff: readonly string[],
+  stages: readonly StageTemplate[],
   units: number,
   totalMinutes: number,
 ): StageTimes {
-  const { stages, allowancePct } = domains[domainId]
-  const on = stages.filter((stage) => !stagesOff.includes(stage.name))
+  const { allowancePct } = domains[domainId]
   return {
     totalMinutes,
     totalAimForMinutes: aimForMinutes(totalMinutes, allowancePct),
-    stages: stageBudgets(totalMinutes, on, allowancePct).map((stage) => ({
+    stages: stageBudgets(totalMinutes, stages, allowancePct).map((stage) => ({
       name: stage.name,
       icon: stage.icon,
       budgetMinutes: stage.budgetMinutes,
@@ -125,4 +139,75 @@ function stageTimes(
       perUnitMinutes: units > 1 && !stage.batchable ? stage.budgetMinutes / units : undefined,
     })),
   }
+}
+
+// A field holding its empty value loads blank, so a new project's price of 0 shows as an empty Price field.
+const savedFieldNames = ["price", "materials", "overhead", "wage", "margin", "batchSize"] as const
+type SavedFieldName = (typeof savedFieldNames)[number]
+
+const savedFields: {
+  [Name in SavedFieldName]: {
+    money: boolean
+    empty?: number
+    load: (project: Project) => number
+    save: (value: number) => Partial<ProjectFields>
+  }
+} = {
+  price: { money: true, empty: 0, load: (project) => project.price, save: (price) => ({ price }) },
+  materials: {
+    money: true,
+    empty: 0,
+    load: (project) => project.materials.find((line) => line.kind === "fixed")?.cost ?? 0,
+    save: (cost) => ({ materials: [{ kind: "fixed", name: "Materials", cost }] }),
+  },
+  overhead: { money: true, empty: 0, load: (project) => project.overhead, save: (overhead) => ({ overhead }) },
+  wage: { money: true, load: (project) => project.wage, save: (wage) => ({ wage }) },
+  margin: { money: false, load: (project) => project.margin, save: (margin) => ({ margin }) },
+  batchSize: { money: false, empty: 1, load: (project) => project.batchSize, save: (batchSize) => ({ batchSize }) },
+}
+
+function fieldText(name: SavedFieldName, value: number): string {
+  const { money, empty } = savedFields[name]
+  if (value === empty) return ""
+  if (!money) return String(value)
+  return `${Math.floor(value / 100)}.${String(value % 100).padStart(2, "0")}`
+}
+
+export function formFor(project: Project): CalculatorForm {
+  const text = (name: SavedFieldName) => fieldText(name, savedFields[name].load(project))
+  return {
+    domain: project.domain,
+    mode: "time",
+    fee: project.fee,
+    stages: project.stages,
+    minutes: "",
+    price: text("price"),
+    materials: text("materials"),
+    overhead: text("overhead"),
+    wage: text("wage"),
+    margin: text("margin"),
+    batchSize: text("batchSize"),
+  }
+}
+
+// A field that doesn't parse is left out, so the project keeps its last good value.
+export function projectInputs(form: CalculatorForm): Partial<ProjectFields> {
+  const fields = parseFields(form)
+  let inputs: Partial<ProjectFields> = { fee: form.fee, stages: [...form.stages] }
+  for (const name of savedFieldNames) {
+    const field = fields[name]
+    const { empty, save } = savedFields[name]
+    if (field.kind === "ok") inputs = { ...inputs, ...save(field.value) }
+    if (field.kind === "empty" && empty !== undefined) inputs = { ...inputs, ...save(empty) }
+  }
+  return inputs
+}
+
+export function withStage(
+  stages: readonly StageTemplate[],
+  added: StageTemplate,
+  domainStages: readonly StageTemplate[],
+): StageTemplate[] {
+  const order = domainStages.map((stage) => stage.name)
+  return [...stages, added].sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name))
 }

@@ -1,7 +1,5 @@
-import { expect, type Page, test } from "@playwright/test"
-import { format, runChecker } from "../../SewAndSo/tests/helpers.mjs"
-
-const themes = ["light", "colorful", "dark"] as const
+import { expect, test } from "@playwright/test"
+import { expectCleanLayout, open, themes } from "./screen.ts"
 
 const routes = [
   "#/",
@@ -18,32 +16,11 @@ const routes = [
   "#/setup",
 ]
 
-async function open(page: Page, hash: string) {
-  await page.goto(`/${hash}`)
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
-  const figtree = await page.evaluate(async () => {
-    await document.fonts.ready
-    return [...document.fonts].some((f) => f.family.replace(/["']/g, "") === "Figtree" && f.status === "loaded")
-  })
-  expect(figtree, "Figtree must load from Google Fonts, or the checker measures the fallback font").toBe(true)
-}
-
-async function settle(page: Page) {
-  await page.evaluate(async () => {
-    await Promise.all(document.getAnimations().map((a) => a.finished.catch(() => {})))
-    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))
-  })
-}
-
 for (const hash of routes) {
   for (const theme of themes) {
     test(`${hash} [${theme}] has no layout violations`, async ({ page }, testInfo) => {
       await open(page, hash)
-      await page.evaluate((id) => window.SewAndSo.setTheme(id, { remember: false }), theme)
-      await settle(page)
-      expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe(theme)
-      const result = await runChecker(page, testInfo)
-      expect(result.violations, `${hash} [${theme}] on ${testInfo.project.name}\n${format(result)}`).toEqual([])
+      await expectCleanLayout(page, testInfo, theme, hash)
     })
   }
 }

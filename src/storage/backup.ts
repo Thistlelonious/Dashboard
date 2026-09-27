@@ -1,5 +1,6 @@
 import type { IDBPDatabase, IDBPTransaction, StoreNames, StoreValue } from "idb"
 import { z } from "zod"
+import { localDate } from "../dates.ts"
 import type { Hue, IconName } from "../design/sewandso/index.d.ts"
 import type { DomainId } from "../pricing/domains/index.ts"
 import type { CoinvoiceSchema } from "./db.ts"
@@ -104,10 +105,45 @@ const settings = z.looseObject({
   lastBackupAt: sortableTime.optional(),
 })
 
+const item = z.looseObject({
+  ...saved,
+  name: z.string(),
+  category: z.string(),
+  domain: z.enum(domainIds),
+  unit: z.string(),
+  crossConversion: z.looseObject({ from: z.string(), to: z.string(), factor: z.number().positive() }).optional(),
+})
+
+const day = z.iso.date()
+
+const purchase = z.looseObject({
+  ...saved,
+  itemId: z.string(),
+  receiptId: z.string(),
+  date: day,
+  vendor: z.string(),
+  qty: z.number(),
+  unit: z.string(),
+  landedCost: cents,
+})
+
+const stockUse = z.looseObject({
+  ...saved,
+  itemId: z.string(),
+  projectId: z.string().optional(),
+  date: day,
+  qty: z.number(),
+  unit: z.string(),
+  reason: z.enum(["build", "adjustment"]),
+})
+
 const storesSchema = z.strictObject({
   projects: z.array(project).default([]),
   checklist: z.array(checklistItem).default([]),
   settings: z.array(settings).max(1).default([]),
+  items: z.array(item).default([]),
+  purchases: z.array(purchase).default([]),
+  stockUses: z.array(stockUse).default([]),
 }) satisfies z.ZodType<BackupStores>
 
 const storeNames = storesSchema.keyof().options
@@ -138,6 +174,21 @@ const storeRules: { [Name in StoreName]: StoreRule<Name> } = {
     write: (tx, record) => tx.objectStore("settings").put(record, "settings"),
     keepThisDevice: ({ lastBackupAt: _, ...incoming }, local) =>
       local.lastBackupAt === undefined ? incoming : { ...incoming, lastBackupAt: local.lastBackupAt },
+  },
+  items: {
+    key: (record) => record.id,
+    read: (tx) => tx.objectStore("items").getAll(),
+    write: (tx, record) => tx.objectStore("items").put(record),
+  },
+  purchases: {
+    key: (record) => record.id,
+    read: (tx) => tx.objectStore("purchases").getAll(),
+    write: (tx, record) => tx.objectStore("purchases").put(record),
+  },
+  stockUses: {
+    key: (record) => record.id,
+    read: (tx) => tx.objectStore("stockUses").getAll(),
+    write: (tx, record) => tx.objectStore("stockUses").put(record),
   },
 }
 
@@ -186,12 +237,31 @@ export function mergeBackup(local: BackupStores, incoming: BackupStores): Merge 
     return { all: [...merged.values()], writes }
   }
 
-  const projects = mergeStore("projects")
-  const checklist = mergeStore("checklist")
-  const settings = mergeStore("settings")
+  const merged = {
+    projects: mergeStore("projects"),
+    checklist: mergeStore("checklist"),
+    settings: mergeStore("settings"),
+    items: mergeStore("items"),
+    purchases: mergeStore("purchases"),
+    stockUses: mergeStore("stockUses"),
+  }
   return {
-    stores: { projects: projects.all, checklist: checklist.all, settings: settings.all },
-    changed: { projects: projects.writes, checklist: checklist.writes, settings: settings.writes },
+    stores: {
+      projects: merged.projects.all,
+      checklist: merged.checklist.all,
+      settings: merged.settings.all,
+      items: merged.items.all,
+      purchases: merged.purchases.all,
+      stockUses: merged.stockUses.all,
+    },
+    changed: {
+      projects: merged.projects.writes,
+      checklist: merged.checklist.writes,
+      settings: merged.settings.writes,
+      items: merged.items.writes,
+      purchases: merged.purchases.writes,
+      stockUses: merged.stockUses.writes,
+    },
     counts,
   }
 }
@@ -203,6 +273,9 @@ async function readStores(tx: Tx<IDBTransactionMode>): Promise<BackupStores> {
     projects: await storeRules.projects.read(tx),
     checklist: await storeRules.checklist.read(tx),
     settings: await storeRules.settings.read(tx),
+    items: await storeRules.items.read(tx),
+    purchases: await storeRules.purchases.read(tx),
+    stockUses: await storeRules.stockUses.read(tx),
   }
 }
 
@@ -229,11 +302,6 @@ export async function applyMerge(db: Db, incoming: Backup): Promise<Counts> {
   for (const name of storeNames) await write(name)
   await tx.done
   return counts
-}
-
-function localDate(time: Date): string {
-  const pad = (n: number) => String(n).padStart(2, "0")
-  return `${time.getFullYear()}-${pad(time.getMonth() + 1)}-${pad(time.getDate())}`
 }
 
 export function backupFileName(now: Date): string {

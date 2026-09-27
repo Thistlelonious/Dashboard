@@ -1,5 +1,6 @@
 import "fake-indexeddb/auto"
 import { IDBFactory } from "fake-indexeddb"
+import { openDB } from "idb"
 import { assert, beforeEach, expect, test } from "vitest"
 import { openDb, type Project } from "./db.ts"
 import { newRecord, touch, type Saved } from "./records.ts"
@@ -83,14 +84,15 @@ test("a ticked seeded item and a changed tax rate survive reopening", async () =
   expect(await reopened.get("settings", "settings")).toMatchObject({ taxRate: 9.5, updatedAt: editedAt })
 })
 
-test("the coinvoice database is version 1, keys projects and checklist by id, and keeps settings under one key", async () => {
+test("the coinvoice database is version 2, keys records by id, and keeps settings under one key", async () => {
   const db = await openDb()
   expect(db.name).toBe("coinvoice")
-  expect(db.version).toBe(1)
-  expect([...db.objectStoreNames]).toEqual(["checklist", "projects", "settings"])
-  const tx = db.transaction(["projects", "checklist", "settings"])
-  expect(tx.objectStore("projects").keyPath).toBe("id")
-  expect(tx.objectStore("checklist").keyPath).toBe("id")
+  expect(db.version).toBe(2)
+  expect([...db.objectStoreNames]).toEqual(["checklist", "items", "projects", "purchases", "settings", "stockUses"])
+  const tx = db.transaction([...db.objectStoreNames])
+  for (const name of ["projects", "checklist", "items", "purchases", "stockUses"] as const) {
+    expect(tx.objectStore(name).keyPath).toBe("id")
+  }
   expect(tx.objectStore("settings").keyPath).toBeNull()
 
   const skirt = newRecord(
@@ -114,4 +116,29 @@ test("the coinvoice database is version 1, keys projects and checklist by id, an
   )
   await db.put("projects", skirt)
   expect(await db.get("projects", skirt.id)).toStrictEqual(skirt)
+})
+
+test("a version 1 database upgrades to version 2 and keeps its records", async () => {
+  const old = await openDB("coinvoice", 1, {
+    upgrade(db) {
+      db.createObjectStore("projects", { keyPath: "id" })
+      db.createObjectStore("checklist", { keyPath: "id" })
+      db.createObjectStore("settings")
+    },
+  })
+  const record = { id: "skirt", updatedAt: editedAt, name: "Lined skirt" }
+  await old.put("projects", record)
+  old.close()
+
+  const db = await openDb()
+  expect(db.version).toBe(2)
+  expect(await db.get("projects", "skirt")).toStrictEqual(record)
+  expect(await db.getAll("items")).toStrictEqual([])
+  expect(await db.count("checklist")).toBe(4)
+})
+
+test("an open database steps aside when a newer version of the app opens it", async () => {
+  await openDb()
+  const newer = await openDB("coinvoice", 3)
+  expect(newer.version).toBe(3)
 })

@@ -29,5 +29,6 @@ Each feature file starts with an H1 and one paragraph about the user-visible beh
 - [Projects](./projects.md) covers creating projects on Home, their cards, and opening one.
 - [Price](./price.md) covers the calculator, stage times, the reverse price, and removing Fit.
 - [Setup](./setup.md) covers settings and the checklist.
+- [Stock](./stock.md) covers purchases, adjustments, stock on hand, average cost, and the item screen.
 - [Backup](./backup.md) covers sending a backup, merging one, the banner, and storage status.
 - [Install and offline](./install-offline.md) covers the built site's manifest, service worker, and offline use.

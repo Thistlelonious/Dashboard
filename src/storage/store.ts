@@ -3,11 +3,31 @@ import type { Hue } from "../design/sewandso/index.d.ts"
 import { domains, type DomainId } from "../pricing/domains/index.ts"
 import { feePresets } from "../pricing/fees.ts"
 import { applyMerge, exportBackup, previewMerge, type Backup, type Counts } from "./backup.ts"
-import { openDb, seededChecklist, type ChecklistItem, type CoinvoiceSchema, type Project, type Settings } from "./db.ts"
+import {
+  openDb,
+  seededChecklist,
+  type ChecklistItem,
+  type CoinvoiceSchema,
+  type InventoryItem,
+  type Project,
+  type Purchase,
+  type Settings,
+  type StockUse,
+} from "./db.ts"
 import { live, newRecord, softDelete, touch, type Saved } from "./records.ts"
 
 export type ProjectFields = Omit<Project, keyof Saved>
 export type SettingsFields = Omit<Settings, "updatedAt" | "lastBackupAt">
+export type ItemFields = Omit<InventoryItem, keyof Saved>
+export type Inventory = { items: InventoryItem[]; purchases: Purchase[]; uses: StockUse[] }
+export type NewPurchase = {
+  item: { existing: string } | { create: ItemFields }
+  vendor: string
+  date: string
+  qty: number
+  unit: string
+  landedCost: number
+}
 
 const [, , , cashOrDirect] = feePresets
 const seedOrder = seededChecklist.map((item) => item.id)
@@ -143,6 +163,42 @@ export function createStore(open: () => Promise<IDBPDatabase<CoinvoiceSchema>> =
       await tx.store.put(touch({ ...settings, ...patch }, now()), "settings")
       await tx.done
       changed()
+    },
+
+    async inventory(): Promise<Inventory> {
+      const tx = (await db()).transaction(["items", "purchases", "stockUses"])
+      const inventory = {
+        items: live(await tx.objectStore("items").getAll()),
+        purchases: live(await tx.objectStore("purchases").getAll()),
+        uses: live(await tx.objectStore("stockUses").getAll()),
+      }
+      await tx.done
+      return inventory
+    },
+
+    async addPurchase({ item, ...purchase }: NewPurchase): Promise<Purchase> {
+      const tx = (await db()).transaction(["items", "purchases"], "readwrite")
+      let itemId: string
+      if ("existing" in item) {
+        itemId = item.existing
+      } else {
+        const created = newRecord(item.create, now())
+        await tx.objectStore("items").put(created)
+        itemId = created.id
+      }
+      const saved = newRecord({ ...purchase, itemId, receiptId: "" }, now())
+      const record = { ...saved, receiptId: `manual-${saved.id}` }
+      await tx.objectStore("purchases").put(record)
+      await tx.done
+      changed()
+      return record
+    },
+
+    async adjustStock(use: { itemId: string; date: string; qty: number; unit: string }): Promise<StockUse> {
+      const record = newRecord({ ...use, reason: "adjustment" as const }, now())
+      await (await db()).put("stockUses", record)
+      changed()
+      return record
     },
 
     async backup(): Promise<Backup> {

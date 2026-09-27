@@ -39,10 +39,13 @@ On your phone, open the address in Chrome or Samsung Internet and add it to the 
 
 Each device keeps its own data in IndexedDB. Backup files carry it across.
 
-1. **Send backup** writes every record to one JSON file. Where the device has a share sheet, it opens the sheet, so you can send the file with Quick Share, Drive, or email. Elsewhere it downloads the file. Keep laptop copies in `../Files/Backups`.
-2. **Merge backup** reads a backup file and merges it record by record. The record with the newer `updatedAt` wins. Deletes are soft (`deletedAt`), so a merge never brings back a deleted record.
-3. The Setup screen shows when you last sent a backup. A banner appears when no backup was ever sent or the last one is more than 14 days old, because invoices are tax records and a lost phone loses everything since its last backup.
-4. The app calls `navigator.storage.persist()` on first run, so the browser does not clear its data to free space.
+1. **Send backup** writes every record to one JSON file named `coinvoice-backup-YYYY-MM-DD.json`. On a phone or tablet with a share sheet, it opens the sheet, so you can send the file with Quick Share, Drive, or email. A laptop downloads the file, because a laptop's share sheet has no way to save into a folder. Keep laptop copies in `../Files/Backups`.
+2. **Merge backup** reads a backup file and shows how many records it would add, update, and leave unchanged. It writes only after you press "Merge". The record with the newer `updatedAt` wins, and a tie keeps this device's record. Deletes are soft (`deletedAt`), so a merge never brings back a deleted record. Merging the same file twice changes nothing the second time.
+3. The Setup screen shows when you last sent a backup. A banner appears on every screen when no backup was ever sent or the last one is more than 14 days old, because invoices are tax records and a lost phone loses everything since its last backup. The banner links to Setup.
+4. `lastBackupAt` belongs to the device that sent the backup. Sending a backup doesn't change the settings' `updatedAt`, so it can't make them win over a newer edit from another device. A merge never copies another device's `lastBackupAt`.
+5. On every start, the app calls `navigator.storage.persist()` unless storage is already kept, so the browser does not clear its data to free space. Setup shows "Storage kept" or "Storage may be cleared".
+
+A backup file is `{ app: "coinvoice", version: 1, exportedAt, stores }`. `stores` holds one array per database store with every record, deleted ones included. `zod` checks the whole file before anything changes. A file from another app, from a newer version, or with a broken record gets a plain error. A field this version doesn't know is kept, so a backup from a newer app loses nothing. A store added by a later batch needs a schema and a rule in `src/storage/backup.ts`. The compiler and a test that compares a backup against the database's stores both catch a store left out.
 
 Pattern PDFs stay on the device where you add them. Backups leave them out.
 
@@ -272,7 +275,7 @@ src/
 	main.tsx, App.tsx, routes.ts
 	money.ts
 	pricing/      fees.ts, pricing.ts, domains/sewing.ts, domains/pie.ts, domains/index.ts
-	storage/      db.ts, records.ts, backup.ts
+	storage/      db.ts, records.ts, backup.ts, persistence.ts
 	inventory/    units.ts, ledger.ts, allocate.ts
 	documents/    lifecycle.ts, snapshot.ts, numbering.ts, history.ts
 	imports/      receipt.ts, template.ts, fixtures/

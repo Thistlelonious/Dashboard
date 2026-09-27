@@ -276,7 +276,7 @@ img { display: block; max-width: 100%; }
 .sas-stages--lg .sas-icon { width: 30px; height: 30px; }
 
 /* Field */
-.sas-field { display: grid; gap: var(--space-3); min-width: 0; }
+.sas-field { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-3); min-width: 0; }
 .sas-field__label { font-size: 17px; line-height: 24px; font-weight: 600; }
 .sas-field__control {
   display: flex;

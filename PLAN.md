@@ -35,6 +35,11 @@ The site lives on GitHub Pages at `https://<github-username>.github.io/coinvoice
 
 On your phone, open the address in Chrome or Samsung Internet and add it to the home screen. After that it has its own icon, opens without browser bars, and works with no signal. The app ships a web app manifest with `display: standalone` and a service worker that caches the app files.
 
+- The manifest's `theme_color` and `background_color` are SewAndSo's Light `canvas`, read from the synced `tokens.css`.
+- `npm run icons` renders SewAndSo's spool in `on-primary` on a Light `primary` square, at 192px and 512px, into `public/icons/`. The spool fills the middle 60%, so the same file also serves as the maskable icon.
+- The service worker precaches the built files, updates itself, and takes over open pages right away. It caches Google Fonts as they load. The first visit loads Figtree before the worker is running, so once the worker takes over, the app fetches Figtree again to put it in the cache. Text keeps its font offline from the first visit on.
+- The dev server and `npm run preview` also serve the app under `/coinvoice/`, such as `http://localhost:5173/coinvoice/`.
+
 ### Moving data between devices
 
 Each device keeps its own data in IndexedDB. Backup files carry it across.
@@ -272,7 +277,7 @@ Each folder owns one body of domain knowledge. Tests sit next to their module as
 
 ```
 src/
-	main.tsx, App.tsx, routes.ts
+	main.tsx, App.tsx, routes.ts, offline.ts
 	money.ts
 	pricing/      fees.ts, pricing.ts, domains/sewing.ts, domains/pie.ts, domains/index.ts
 	storage/      db.ts, records.ts, backup.ts, persistence.ts
@@ -281,7 +286,7 @@ src/
 	imports/      receipt.ts, template.ts, fixtures/
 	design/       sewandso/ (synced copy, never edited), local.css, Icon.tsx
 	screens/      one folder per screen
-scripts/        sync-sewandso.mjs, icons.mjs
+scripts/        sync-sewandso.mjs, icons.mjs, light-tokens.mjs
 tests/          design.spec.ts (SewAndSo layout checker)
 ```
 

@@ -82,7 +82,7 @@ aim-for time  = stage budget ÷ (1 + allowance)
 
 `round` is half up to the cent. The labor budget is what remains, so the lines of every document add up to the price exactly.
 
-The formulas read each rate as a fraction. The code turns a rate into whole hundredths of a percent and multiplies and divides in integers, so a half cent is a true half cent. With plain fractions, $5.00 at 2.9% rounds to 14 cents instead of 15.
+The formulas read each rate as a fraction. The code turns a rate into whole hundredths of a percent before it multiplies, so a half cent comes out as exactly half a cent. With plain fractions, $5.00 at 2.9% rounds to 14 cents instead of 15.
 
 The reverse direction solves the same equation for price and rounds the result.
 

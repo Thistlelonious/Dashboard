@@ -1,4 +1,6 @@
 import { useState } from "react"
+import { Choices } from "../../design/Choices.tsx"
+import { Field } from "../../design/Field.tsx"
 import { Icon } from "../../design/Icon.tsx"
 import { formatCents, type Cents } from "../../money.ts"
 import { domains } from "../../pricing/domains/index.ts"
@@ -70,7 +72,6 @@ export function PriceScreen({ projectId }: { projectId?: string }) {
       <section className="sas-panel sas-stack">
         <h2 className="sas-title">Inputs</h2>
         <Choices
-          id="price-domain"
           label="Craft"
           options={Object.values(domains).map((domain) => ({
             key: domain.id,
@@ -80,7 +81,6 @@ export function PriceScreen({ projectId }: { projectId?: string }) {
           }))}
         />
         <Choices
-          id="price-mode"
           label="Work out"
           options={modes.map(({ mode, label }) => ({
             key: mode,
@@ -90,7 +90,6 @@ export function PriceScreen({ projectId }: { projectId?: string }) {
           }))}
         />
         <Choices
-          id="price-fee"
           label="Fees"
           options={feePresets.map((fee) => ({
             key: fee.name,
@@ -103,9 +102,12 @@ export function PriceScreen({ projectId }: { projectId?: string }) {
           {numberFields
             .filter(({ onlyIn }) => onlyIn === undefined || onlyIn === form.mode)
             .map((field) => (
-              <NumberInput
+              <Field
                 key={field.name}
-                field={field}
+                label={field.label}
+                prefix={field.prefix}
+                unit={field.unit}
+                inputMode={field.inputMode}
                 value={form[field.name]}
                 error={errors[field.name]}
                 onChange={(value) => update({ [field.name]: value })}
@@ -118,79 +120,6 @@ export function PriceScreen({ projectId }: { projectId?: string }) {
         <Result result={result} mode={form.mode} unit={domains[form.domain].sellingUnit} />
       </section>
     </>
-  )
-}
-
-function Choices({
-  id,
-  label,
-  options,
-}: {
-  id: string
-  label: string
-  options: { key: string; label: string; checked: boolean; select: () => void }[]
-}) {
-  return (
-    <div className="sas-stack sas-stack--tight">
-      <span className="sas-field__label" id={id}>
-        {label}
-      </span>
-      <div className="sas-actions" role="radiogroup" aria-labelledby={id}>
-        {options.map((option) => (
-          <button
-            key={option.key}
-            className={option.checked ? "sas-button sas-button--tonal" : "sas-button sas-button--outline"}
-            type="button"
-            role="radio"
-            aria-checked={option.checked}
-            tabIndex={option.checked ? 0 : -1}
-            data-value={option.key}
-            onClick={option.select}
-          >
-            {option.checked && <Icon name="check" />}
-            {option.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function NumberInput({
-  field,
-  value,
-  error,
-  onChange,
-}: {
-  field: NumberField
-  value: string
-  error: string | undefined
-  onChange: (value: string) => void
-}) {
-  const messageId = `price-${field.name}-message`
-  return (
-    <label className="sas-field" data-state={error === undefined ? undefined : "error"}>
-      <span className="sas-field__label">{field.label}</span>
-      <span className="sas-field__control">
-        {field.prefix !== undefined && <span className="sas-field__unit">{field.prefix}</span>}
-        <input
-          className="sas-field__input"
-          type="text"
-          inputMode={field.inputMode}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          aria-invalid={error !== undefined}
-          aria-describedby={error === undefined ? undefined : messageId}
-        />
-        {field.unit !== undefined && <span className="sas-field__unit">{field.unit}</span>}
-      </span>
-      {error !== undefined && (
-        <span className="sas-field__message" id={messageId}>
-          <Icon name="alert" />
-          {error}
-        </span>
-      )}
-    </label>
   )
 }
 

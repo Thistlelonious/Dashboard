@@ -5,7 +5,7 @@ import type { Project } from "../../storage/db.ts"
 import {
   calculate,
   formFor,
-  projectInputs,
+  parsedProjectInputs,
   withStage,
   type CalculatorForm,
   type CalculatorResult,
@@ -282,7 +282,7 @@ test("a new project's zero price, no materials, and zero overhead load as blank 
 })
 
 test("the form saves every input, with materials as one fixed line", () => {
-  expect(projectInputs(shopifySkirt)).toStrictEqual({
+  expect(parsedProjectInputs(shopifySkirt)).toStrictEqual({
     fee: shopifyOnline,
     stages: domains.sewing.stages,
     price: 8500,
@@ -295,7 +295,7 @@ test("the form saves every input, with materials as one fixed line", () => {
 })
 
 test("blank money fields save as 0 and a blank batch size as 1", () => {
-  expect(projectInputs({ ...shopifySkirt, price: "", materials: "", overhead: "", batchSize: "" })).toMatchObject({
+  expect(parsedProjectInputs({ ...shopifySkirt, price: "", materials: "", overhead: "", batchSize: "" })).toMatchObject({
     price: 0,
     materials: [{ kind: "fixed", name: "Materials", cost: 0 }],
     overhead: 0,
@@ -304,13 +304,13 @@ test("blank money fields save as 0 and a blank batch size as 1", () => {
 })
 
 test("a field that doesn't parse is left out, so the project keeps its last good value", () => {
-  const inputs = projectInputs({ ...shopifySkirt, price: "abc", wage: "", margin: "99", batchSize: "0" })
+  const inputs = parsedProjectInputs({ ...shopifySkirt, price: "abc", wage: "", margin: "99", batchSize: "0" })
   expect(Object.keys(inputs).sort()).toEqual(["fee", "materials", "overhead", "stages"])
 })
 
 test("saving then loading gives back the same form and result", () => {
   const form: CalculatorForm = { ...shopifySkirt, batchSize: "3", stages: [cut, sew, finish] }
-  const reloaded = formFor({ ...savedSkirt, ...projectInputs(form) })
+  const reloaded = formFor({ ...savedSkirt, ...parsedProjectInputs(form) })
   expect(reloaded).toStrictEqual({ ...form, price: "85.00", materials: "32.00", overhead: "5.00" })
   expect(calculate(reloaded)).toStrictEqual(calculate(form))
 })

@@ -14,9 +14,7 @@ function iconNames(svgs: Locator) {
   )
 }
 
-// Saves run in the background as you type. A read-only transaction over every store waits for any
-// write already queued, so a reload after it can't drop the last save.
-async function reload(page: Page) {
+async function reloadAfterSaves(page: Page) {
   await page.evaluate(
     () =>
       new Promise<void>((resolve, reject) => {
@@ -117,7 +115,7 @@ test("projects are created on Home, priced, trimmed of Fit, renamed, and deleted
   await choose(page, "Shopify online")
   await fill(page, { Price: "85", Materials: "32", Overhead: "5" })
   await expect.poll(() => total(page)).toBe("84.7 min")
-  await reload(page)
+  await reloadAfterSaves(page)
   await expect(page.getByRole("radio", { name: "Shopify online" })).toHaveAttribute("aria-checked", "true")
   for (const [label, value] of Object.entries({
     Price: "85.00",
@@ -133,7 +131,7 @@ test("projects are created on Home, priced, trimmed of Fit, renamed, and deleted
 
   await fill(page, { Margin: "25", "Wage per hour": "abc" })
   await expect(field(page, "Wage per hour")).toHaveAttribute("data-state", "error")
-  await reload(page)
+  await reloadAfterSaves(page)
   await expect(field(page, "Margin").locator("input")).toHaveValue("25")
   await expect(field(page, "Wage per hour").locator("input")).toHaveValue("20.00")
   await fill(page, { Margin: "20" })
@@ -145,7 +143,7 @@ test("projects are created on Home, priced, trimmed of Fit, renamed, and deleted
     ["Sew", "44.8 min"],
     ["Finish", "19.9 min"],
   ])
-  await reload(page)
+  await reloadAfterSaves(page)
   await expect.poll(() => budgets(page)).toEqual([
     ["Cut", "19.9 min"],
     ["Sew", "44.8 min"],
@@ -177,7 +175,7 @@ test("projects are created on Home, priced, trimmed of Fit, renamed, and deleted
   await fill(page, { Name: "Wrap skirt" })
   await page.getByRole("button", { name: "Save" }).click()
   await expect(page.locator(".sas-heading", { hasText: "Wrap skirt" })).toBeVisible()
-  await reload(page)
+  await reloadAfterSaves(page)
   await expect(page.locator(".sas-heading", { hasText: "Wrap skirt" })).toBeVisible()
   await expect.poll(() => total(page)).toBe("84.7 min")
 
@@ -189,7 +187,7 @@ test("projects are created on Home, priced, trimmed of Fit, renamed, and deleted
   await page.getByRole("button", { name: "Delete", exact: true }).click()
   await page.getByRole("button", { name: "Delete for good" }).click()
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Home")
-  await reload(page)
+  await reloadAfterSaves(page)
   await expect(page.locator("a.sas-card .sas-card__title")).toHaveText(["Wrap skirt"])
 
   await page.goto(pieUrl)
@@ -214,7 +212,7 @@ test("the checklist keeps a tick and your own item across reloads, and your own 
   await expect.poll(() => checklistTexts(page)).toEqual([...seededTexts, "Order business cards"])
   await expect(field(page, "Item").locator("input")).toHaveValue("")
 
-  await reload(page)
+  await reloadAfterSaves(page)
   await expect.poll(() => checklistTexts(page)).toEqual([...seededTexts, "Order business cards"])
   const checked = await page.getByRole("checkbox").evaluateAll((boxes) =>
     boxes.map((box) => box instanceof HTMLInputElement && box.checked),
@@ -226,7 +224,7 @@ test("the checklist keeps a tick and your own item across reloads, and your own 
 
   await own.getByRole("button", { name: "Delete" }).click()
   await expect.poll(() => checklistTexts(page)).toEqual(seededTexts)
-  await reload(page)
+  await reloadAfterSaves(page)
   await expect.poll(() => checklistTexts(page)).toEqual(seededTexts)
 })
 
@@ -239,14 +237,14 @@ test("every setting survives a reload, and one that doesn't parse keeps its last
 
   const changed = { "Business name": "Thimble Row", "Tax rate": "9.25", Deposit: "25", "Estimates valid for": "14" }
   await fill(page, changed)
-  await reload(page)
+  await reloadAfterSaves(page)
   for (const [label, value] of Object.entries(changed)) {
     await expect(field(page, label).locator("input")).toHaveValue(value)
   }
 
   await fill(page, { Deposit: "150" })
   await expect(field(page, "Deposit").locator(".sas-field__message")).toHaveText("Use a number up to 100, like 50")
-  await reload(page)
+  await reloadAfterSaves(page)
   await expect(field(page, "Deposit").locator("input")).toHaveValue("25")
 })
 

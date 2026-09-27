@@ -141,34 +141,33 @@ function stageTimes(
   }
 }
 
-// A field holding its empty value loads blank, so a new project's price of 0 shows as an empty Price field.
 const savedFieldNames = ["price", "materials", "overhead", "wage", "margin", "batchSize"] as const
 type SavedFieldName = (typeof savedFieldNames)[number]
 
 const savedFields: {
   [Name in SavedFieldName]: {
     money: boolean
-    empty?: number
+    blankValue?: number
     load: (project: Project) => number
     save: (value: number) => Partial<ProjectFields>
   }
 } = {
-  price: { money: true, empty: 0, load: (project) => project.price, save: (price) => ({ price }) },
+  price: { money: true, blankValue: 0, load: (project) => project.price, save: (price) => ({ price }) },
   materials: {
     money: true,
-    empty: 0,
+    blankValue: 0,
     load: (project) => project.materials.find((line) => line.kind === "fixed")?.cost ?? 0,
     save: (cost) => ({ materials: [{ kind: "fixed", name: "Materials", cost }] }),
   },
-  overhead: { money: true, empty: 0, load: (project) => project.overhead, save: (overhead) => ({ overhead }) },
+  overhead: { money: true, blankValue: 0, load: (project) => project.overhead, save: (overhead) => ({ overhead }) },
   wage: { money: true, load: (project) => project.wage, save: (wage) => ({ wage }) },
   margin: { money: false, load: (project) => project.margin, save: (margin) => ({ margin }) },
-  batchSize: { money: false, empty: 1, load: (project) => project.batchSize, save: (batchSize) => ({ batchSize }) },
+  batchSize: { money: false, blankValue: 1, load: (project) => project.batchSize, save: (batchSize) => ({ batchSize }) },
 }
 
 function fieldText(name: SavedFieldName, value: number): string {
-  const { money, empty } = savedFields[name]
-  if (value === empty) return ""
+  const { money, blankValue } = savedFields[name]
+  if (value === blankValue) return ""
   if (!money) return String(value)
   return `${Math.floor(value / 100)}.${String(value % 100).padStart(2, "0")}`
 }
@@ -190,15 +189,14 @@ export function formFor(project: Project): CalculatorForm {
   }
 }
 
-// A field that doesn't parse is left out, so the project keeps its last good value.
-export function projectInputs(form: CalculatorForm): Partial<ProjectFields> {
+export function parsedProjectInputs(form: CalculatorForm): Partial<ProjectFields> {
   const fields = parseFields(form)
   let inputs: Partial<ProjectFields> = { fee: form.fee, stages: [...form.stages] }
   for (const name of savedFieldNames) {
     const field = fields[name]
-    const { empty, save } = savedFields[name]
+    const { blankValue, save } = savedFields[name]
     if (field.kind === "ok") inputs = { ...inputs, ...save(field.value) }
-    if (field.kind === "empty" && empty !== undefined) inputs = { ...inputs, ...save(empty) }
+    if (field.kind === "empty" && blankValue !== undefined) inputs = { ...inputs, ...save(blankValue) }
   }
   return inputs
 }

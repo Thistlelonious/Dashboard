@@ -19,8 +19,7 @@ function newestFirst(a: Saved, b: Saved) {
   return b.updatedAt.localeCompare(a.updatedAt)
 }
 
-// Seeded items keep the PLAN.md order. Your own items have no creation time, so they sort by text to stay put when ticked.
-function checklistOrder(a: ChecklistItem, b: ChecklistItem) {
+function seededFirstThenByText(a: ChecklistItem, b: ChecklistItem) {
   if (a.seeded !== b.seeded) return a.seeded ? -1 : 1
   if (a.seeded) return seedOrder.indexOf(a.id) - seedOrder.indexOf(b.id)
   return a.text.localeCompare(b.text)
@@ -110,7 +109,7 @@ export function createStore(open: () => Promise<IDBPDatabase<CoinvoiceSchema>> =
     },
 
     async checklist(): Promise<ChecklistItem[]> {
-      return live(await (await db()).getAll("checklist")).sort(checklistOrder)
+      return live(await (await db()).getAll("checklist")).sort(seededFirstThenByText)
     },
 
     async addChecklistItem({ text, why }: { text: string; why: string }): Promise<ChecklistItem> {

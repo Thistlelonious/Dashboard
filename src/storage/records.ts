@@ -8,9 +8,8 @@ export function touch<T extends { updatedAt: string }>(record: T, now: string): 
   return { ...record, updatedAt: now }
 }
 
-// A merge keeps the copy with the newer updatedAt, so a delete has to be newer than the live copies it replaces.
 export function softDelete<T extends Saved>(record: T, now: string): T {
-  return { ...record, deletedAt: now, updatedAt: now }
+  return touch({ ...record, deletedAt: now }, now)
 }
 
 export function live<T extends Saved>(records: readonly T[]): T[] {

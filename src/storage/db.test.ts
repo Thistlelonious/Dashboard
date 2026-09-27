@@ -4,7 +4,7 @@ import { assert, beforeEach, expect, test } from "vitest"
 import { openDb, type Project } from "./db.ts"
 import { newRecord, touch, type Saved } from "./records.ts"
 
-const seededAt = "2026-09-26T00:00:00.000Z"
+const beforeAnyEdit = "2026-09-26T00:00:00.000Z"
 const editedAt = "2026-09-27T09:00:00.000Z"
 
 beforeEach(() => {
@@ -31,7 +31,7 @@ test("first open seeds the PLAN.md checklist and the default settings at the fix
       id: "seed-cottage-food",
       text: "Register as a Class A cottage food operation with LA County Public Health, Environmental Health.",
       why: "Required before selling pies. The 2026 sales cap is $88,878.",
-      updatedAt: seededAt,
+      updatedAt: beforeAnyEdit,
       done: false,
       seeded: true,
     },
@@ -39,7 +39,7 @@ test("first open seeds the PLAN.md checklist and the default settings at the fix
       id: "seed-resale-certificate",
       text: "Give fabric suppliers a California resale certificate (CDTFA-230).",
       why: "With a seller's permit, materials that become part of items you sell can be bought without sales tax. That lowers the landed cost of fabric, thread, and zippers.",
-      updatedAt: seededAt,
+      updatedAt: beforeAnyEdit,
       done: false,
       seeded: true,
     },
@@ -47,7 +47,7 @@ test("first open seeds the PLAN.md checklist and the default settings at the fix
       id: "seed-sellers-permit",
       text: "Get a California seller's permit from CDTFA.",
       why: "Required before selling garments, which are taxable.",
-      updatedAt: seededAt,
+      updatedAt: beforeAnyEdit,
       done: false,
       seeded: true,
     },
@@ -55,13 +55,13 @@ test("first open seeds the PLAN.md checklist and the default settings at the fix
       id: "seed-shopify-plan",
       text: "Confirm your Shopify plan and card rate in Shopify admin.",
       why: "The fee presets assume the Basic plan.",
-      updatedAt: seededAt,
+      updatedAt: beforeAnyEdit,
       done: false,
       seeded: true,
     },
   ])
   expect(await db.get("settings", "settings")).toStrictEqual({
-    updatedAt: seededAt,
+    updatedAt: beforeAnyEdit,
     businessName: "",
     taxRate: 10.5,
     depositPct: 50,

@@ -46,9 +46,7 @@ export interface CoinvoiceSchema extends DBSchema {
   settings: { key: "settings"; value: Settings }
 }
 
-// Seeds carry a fixed time instead of the current one. A device that seeds after another device's
-// real edit must not look newer than that edit when backups merge by updatedAt.
-const seededAt = "2026-09-26T00:00:00.000Z"
+const beforeAnyEdit = "2026-09-26T00:00:00.000Z"
 
 export const seededChecklist: ChecklistItem[] = [
   {
@@ -71,10 +69,10 @@ export const seededChecklist: ChecklistItem[] = [
     text: "Give fabric suppliers a California resale certificate (CDTFA-230).",
     why: "With a seller's permit, materials that become part of items you sell can be bought without sales tax. That lowers the landed cost of fabric, thread, and zippers.",
   },
-].map((item) => ({ ...item, updatedAt: seededAt, done: false, seeded: true }))
+].map((item) => ({ ...item, updatedAt: beforeAnyEdit, done: false, seeded: true }))
 
 const defaultSettings: Settings = {
-  updatedAt: seededAt,
+  updatedAt: beforeAnyEdit,
   businessName: "",
   taxRate: 10.5,
   depositPct: 50,

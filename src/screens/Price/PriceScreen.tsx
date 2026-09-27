@@ -11,7 +11,7 @@ import { useStored } from "../../storage/useStored.ts"
 import {
   calculate,
   formFor,
-  projectInputs,
+  parsedProjectInputs,
   withStage,
   type CalculatorForm,
   type CalculatorResult,
@@ -82,7 +82,7 @@ function Calculator({ project, missing }: { project: Project | null; missing: bo
   const update = (patch: Partial<CalculatorForm>) => {
     const next = { ...form, ...patch }
     setForm(next)
-    if (project !== null) void store.updateProject(project.id, projectInputs(next))
+    if (project !== null) void store.updateProject(project.id, parsedProjectInputs(next))
   }
   const result = calculate(form)
   const errors = result.kind === "invalid" ? result.errors : {}

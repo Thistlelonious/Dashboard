@@ -44,10 +44,36 @@ export function App() {
         </div>
       </header>
       <main className="sas-stack">
+        <StorageNotice />
         <BackupReminder />
         {screenFor(parseRoute(hash))}
       </main>
     </div>
+  )
+}
+
+const storageNotices = {
+  waiting: "Close coinvoice in your other tabs and windows, including the installed app. This page finishes updating once they close.",
+  replaced: "coinvoice was updated in another tab. Reload to keep working.",
+}
+
+function StorageNotice() {
+  const status = useSyncExternalStore(store.subscribe, store.status)
+  if (status === "ready") return null
+  return (
+    <aside className="sas-panel sas-stack sas-stack--tight" role="alert" data-print="hide">
+      <p className="sas-subheading sas-actions">
+        <Icon name="alert" />
+        {storageNotices[status]}
+      </p>
+      {status === "replaced" && (
+        <div className="sas-actions">
+          <button className="sas-button" type="button" onClick={() => location.reload()}>
+            Reload
+          </button>
+        </div>
+      )}
+    </aside>
   )
 }
 

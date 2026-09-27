@@ -82,6 +82,8 @@ aim-for time  = stage budget ÷ (1 + allowance)
 
 `round` is half up to the cent. The labor budget is what remains, so the lines of every document add up to the price exactly.
 
+The formulas read each rate as a fraction. The code turns a rate into whole hundredths of a percent and multiplies and divides in integers, so a half cent is a true half cent. With plain fractions, $5.00 at 2.9% rounds to 14 cents instead of 15.
+
 The reverse direction solves the same equation for price and rounds the result.
 
 ```
@@ -183,6 +185,7 @@ Every saved record has an `id`, an `updatedAt` time, and an optional `deletedAt`
 
 ```ts
 type Cents = number
+type Percent = number
 type Saved = { id: string; updatedAt: string; deletedAt?: string }
 
 type Domain = {
@@ -190,7 +193,7 @@ type Domain = {
 	label: string
 	sellingUnit: string
 	stages: StageTemplate[]
-	allowancePct: number
+	allowancePct: Percent
 	estimateMaterialsLabel: string
 	estimateLaborLabel: string
 	taxable: boolean
@@ -200,7 +203,7 @@ type Domain = {
 
 type Hue = "rose" | "madder" | "marigold" | "fern" | "teal" | "cornflower" | "plum"
 type StageTemplate = { name: string; weight: number; waitMin: number; batchable: boolean; icon?: IconName }
-type FeePreset = { name: string; pct: number; fixed: Cents }
+type FeePreset = { name: string; pct: Percent; fixed: Cents }
 
 type UnitFamily = "length" | "weight" | "volume" | "count"
 type InventoryItem = Saved & { name: string; category: string; domain: Domain["id"]; unit: string; crossConversion?: { from: string; to: string; factor: number } }
@@ -223,7 +226,7 @@ type Project = Saved & {
 	materials: MaterialLine[]
 	overhead: Cents
 	wage: Cents
-	margin: number
+	margin: Percent
 	stages: StageTemplate[]
 	firstBuild: boolean
 	built: boolean
@@ -245,14 +248,16 @@ type Document = Saved & {
 type DocumentSnapshot = {
 	price: Cents; fees: Cents; feePreset: string
 	materials: { name: string; qty: number; unit: string; cost: Cents }[]
-	overhead: Cents; wage: Cents; margin: number
+	overhead: Cents; wage: Cents; margin: Percent
 	laborBudgetMinutes: number; actualMinutes?: number
-	taxRate: number; tax: Cents; total: Cents; depositPct: number; deposit: Cents
+	taxRate: Percent; tax: Cents; total: Cents; depositPct: Percent; deposit: Cents
 }
 
 type ChecklistItem = Saved & { text: string; why: string; done: boolean; seeded: boolean }
-type Settings = { updatedAt: string; businessName: string; taxRate: number; depositPct: number; estimateValidDays: number; lastBackupAt?: string }
+type Settings = { updatedAt: string; businessName: string; taxRate: Percent; depositPct: Percent; estimateValidDays: number; lastBackupAt?: string }
 ```
+
+A `Percent` is in percent points with at most two decimals, so 2.9 means 2.9%. Fee percents, margins, tax rates, deposits, and allowances all use it.
 
 `IconName` comes from SewAndSo's `index.d.ts`. A domain whose stages all have an `icon` shows SewAndSo's stage track. Sewing does, and pies show a plain stage list. A project's `hue` sets its card color and comes from a swatch picker when the project is created.
 
@@ -283,6 +288,7 @@ Each domain is one data file. Adding bookbinding or woodburning later means writ
 
 | Field | Sewing | Pie |
 |---|---|---|
+| `label` | Sewing | Pies |
 | `sellingUnit` | garment | batch |
 | `allowancePct` | 15 | 10 |
 | `estimateMaterialsLabel` | Materials | Ingredients and packaging |
@@ -290,6 +296,8 @@ Each domain is one data file. Adding bookbinding or woodburning later means writ
 | `taxable` | true | false |
 | Stages and weights | Cut 20, Sew 45, Fit 15, Finish 20 | Crust 30, Filling 25, Assembly and crimping 20, Baking (hands-on) 10, Cooling and packaging 15 |
 | Stage icons | scissors, needle, tape, hanger | None |
+| Batchable stages | None | Crust, Filling, Baking (hands-on) |
+| Wait minutes | 0 | 0 for now. Chill, bake, and cool times come later. |
 | `cardIcon` | fabric | None |
 | `complianceNotes` | Check each pattern's license before selling what you make from it. | Fruit pies are allowed under California cottage food law. Cream, custard, and meringue pies are not. |
 

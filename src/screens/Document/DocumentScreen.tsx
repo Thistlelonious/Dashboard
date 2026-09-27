@@ -1,13 +1,15 @@
 export function DocumentScreen({ documentId }: { documentId: string }) {
   return (
     <>
-      <h1>Document</h1>
-      <p>Document {documentId}</p>
-      <section>
-        <h2>Details</h2>
+      <header className="sas-panel sas-stack sas-stack--tight">
+        <h1 className="sas-display">Document</h1>
+        <p>Document {documentId}</p>
+      </header>
+      <section className="sas-panel">
+        <h2 className="sas-title">Details</h2>
       </section>
-      <section>
-        <h2>Moves</h2>
+      <section className="sas-panel">
+        <h2 className="sas-title">Moves</h2>
       </section>
     </>
   )

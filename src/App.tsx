@@ -1,4 +1,6 @@
-import { type JSX, useSyncExternalStore } from "react"
+import { type JSX, useEffect, useRef, useSyncExternalStore } from "react"
+import { Icon } from "./design/Icon.tsx"
+import { ThemeSwitch } from "./design/ThemeSwitch.tsx"
 import { parseRoute, type Route } from "./routes.ts"
 import { BuildScreen } from "./screens/Build/BuildScreen.tsx"
 import { DocumentScreen } from "./screens/Document/DocumentScreen.tsx"
@@ -20,20 +22,26 @@ function readHash() {
 }
 
 export function App() {
-  const route = parseRoute(useSyncExternalStore(subscribeToHash, readHash))
+  const hash = useSyncExternalStore(subscribeToHash, readHash)
+  const page = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (page.current !== null) window.SewAndSo.hydrate(page.current)
+  }, [hash])
+
   return (
-    <>
-      <nav>
-        <ul>
-          <li><a href="#/">Home</a></li>
-          <li><a href="#/price">Price</a></li>
-          <li><a href="#/stock">Stock</a></li>
-          <li><a href="#/invoices">Invoices</a></li>
-          <li><a href="#/setup">Setup</a></li>
-        </ul>
-      </nav>
-      <main>{screenFor(route)}</main>
-    </>
+    <div className="sas-page" ref={page}>
+      <header className="sas-appbar">
+        <a className="sas-appbar__brand" href="#/">
+          <Icon name="spool" />
+          coinvoice
+        </a>
+        <div className="sas-appbar__end">
+          <ThemeSwitch />
+        </div>
+      </header>
+      <main className="sas-stack">{screenFor(parseRoute(hash))}</main>
+    </div>
   )
 }
 

@@ -1,9 +1,11 @@
 export function StockScreen() {
   return (
     <>
-      <h1>Stock</h1>
-      <section>
-        <h2>Items</h2>
+      <header className="sas-panel">
+        <h1 className="sas-display">Stock</h1>
+      </header>
+      <section className="sas-panel">
+        <h2 className="sas-title">Items</h2>
       </section>
     </>
   )

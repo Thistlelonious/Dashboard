@@ -1,6 +1,6 @@
 import { type JSX, useEffect, useRef, useSyncExternalStore } from "react"
 import { Icon } from "./design/Icon.tsx"
-import type { ThemeId } from "./design/sewandso/index.d.ts"
+import { ThemeSwitch } from "./design/ThemeSwitch.tsx"
 import { parseRoute, type Route } from "./routes.ts"
 import { BuildScreen } from "./screens/Build/BuildScreen.tsx"
 import { DocumentScreen } from "./screens/Document/DocumentScreen.tsx"
@@ -11,12 +11,6 @@ import { PriceScreen } from "./screens/Price/PriceScreen.tsx"
 import { PrintScreen } from "./screens/Print/PrintScreen.tsx"
 import { SetupScreen } from "./screens/Setup/SetupScreen.tsx"
 import { StockScreen } from "./screens/Stock/StockScreen.tsx"
-
-const themeOptions: { id: ThemeId; label: string }[] = [
-  { id: "light", label: "Light" },
-  { id: "colorful", label: "Colorful" },
-  { id: "dark", label: "Dark" },
-]
 
 function subscribeToHash(onChange: () => void) {
   window.addEventListener("hashchange", onChange)
@@ -43,21 +37,7 @@ export function App() {
           coinvoice
         </a>
         <div className="sas-appbar__end">
-          <div className="sas-theme-switch" role="radiogroup" aria-label="Color mode">
-            {themeOptions.map(({ id, label }) => (
-              // bundle.js owns aria-checked and tabIndex here, so React never sets them and never undoes its changes.
-              <button
-                key={id}
-                className="sas-theme-switch__option"
-                type="button"
-                role="radio"
-                data-sas-theme={id}
-                aria-label={label}
-              >
-                <span className="sas-theme-switch__disc" data-theme={id} />
-              </button>
-            ))}
-          </div>
+          <ThemeSwitch />
         </div>
       </header>
       <main className="sas-stack">{screenFor(parseRoute(hash))}</main>

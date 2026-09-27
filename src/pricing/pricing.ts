@@ -30,12 +30,16 @@ export function stageBudgets(
   totalMinutes: number,
   stages: readonly StageTemplate[],
   allowancePct: Percent,
-): { name: string; budgetMinutes: number; aimForMinutes: number }[] {
+): (StageTemplate & { budgetMinutes: number; aimForMinutes: number })[] {
   const weightSum = stages.reduce((sum, stage) => sum + stage.weight, 0)
   return stages.map((stage) => {
     const budgetMinutes = (totalMinutes * stage.weight) / weightSum
-    return { name: stage.name, budgetMinutes, aimForMinutes: (budgetMinutes * 100) / (100 + allowancePct) }
+    return { ...stage, budgetMinutes, aimForMinutes: aimForMinutes(budgetMinutes, allowancePct) }
   })
+}
+
+export function aimForMinutes(budgetMinutes: number, allowancePct: Percent): number {
+  return (budgetMinutes * 100) / (100 + allowancePct)
 }
 
 export function priceForMinutes(inputs: Omit<PricingInputs, "price">, minutes: number): Cents {

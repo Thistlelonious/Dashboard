@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"SewAndSo","components":[{"name":"Backdrop"},{"name":"AppBar"},{"name":"Button"},{"name":"ThemeSwitch"},{"name":"Tile"},{"name":"ProjectCard"},{"name":"StageTrack"},{"name":"Field"},{"name":"Swatches"}]} */
+/* @ds-bundle: {"format":4,"namespace":"SewAndSo","components":[{"name":"Backdrop"},{"name":"AppBar"},{"name":"Button"},{"name":"ThemeSwitch"},{"name":"Tile"},{"name":"ProjectCard"},{"name":"StageTrack"},{"name":"Field"},{"name":"Swatches"},{"name":"Table"}]} */
 (function () {
   var THEMES = ['light', 'colorful', 'dark'];
   var STORE_KEY = 'sewandso-theme';
@@ -21,7 +21,14 @@
     "close": "<path d=\"M6 6l12 12M18 6 6 18\"/>",
     "arrow-right": "<path d=\"M5 12h14M13 6l6 6-6 6\"/>",
     "arrow-left": "<path d=\"M19 12H5M11 6l-6 6 6 6\"/>",
-    "alert": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7.5V13\"/><path d=\"M12 16.5v.01\" stroke-width=\"2.5\"/>"
+    "alert": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7.5V13\"/><path d=\"M12 16.5v.01\" stroke-width=\"2.5\"/>",
+    "print": "<path d=\"M7 9V3.5h10V9\"/><rect x=\"3.5\" y=\"9\" width=\"17\" height=\"8\" rx=\"2\"/><path d=\"M7 14h10v6.5H7z\"/>",
+    "send": "<path d=\"M20.5 3.5 10 14\"/><path d=\"M20.5 3.5 14 20.5l-4-6.5-6.5-4z\"/>",
+    "import": "<path d=\"M12 3.5v11M7.5 10l4.5 4.5 4.5-4.5\"/><path d=\"M4 15.5V19a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 20 19v-3.5\"/>",
+    "timer": "<circle cx=\"12\" cy=\"13.5\" r=\"7.5\"/><path d=\"M12 13.5v-4M10 2.5h4M18.5 7l1.5-1.5\"/>",
+    "settings": "<path d=\"M4 7h8.5M17.5 7H20M4 17h2.5M11.5 17H20\"/><circle cx=\"15\" cy=\"7\" r=\"2.5\"/><circle cx=\"9\" cy=\"17\" r=\"2.5\"/>",
+    "delete": "<path d=\"M4 6.5h16M9.5 6.5V4h5v2.5\"/><path d=\"M6 6.5 7 20h10l1-13.5\"/><path d=\"M10 10.5v6M14 10.5v6\"/>",
+    "invoice": "<path d=\"M6 3h12v18l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5-2 1.5z\"/><path d=\"M9 8h6M9 12h6M9 16h3\"/>"
   };
 /* icons:end */
 

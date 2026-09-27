@@ -139,7 +139,17 @@ const between = (text, tag, body) => {
 const dataUri = svg => `url("data:image/svg+xml,${encodeURIComponent(svg).replace(/'/g, '%27')}")`;
 const cssPath = new URL('components/bundle.css', root);
 const backdropCss = themes.map((t, i) => `  --sas-backdrop-${t}: ${dataUri(backdropSvg(t, resolved[i]))};`).join('\n');
-writeFileSync(cssPath, between(readFileSync(cssPath, 'utf8'), 'backdrops', `:root {\n${backdropCss}\n}`));
+const byName = Object.fromEntries(color.map(t => [t.name, t.value]));
+const lightValue = name => {
+  const v = typeof byName[name] === 'string' ? byName[name] : byName[name].light;
+  return v.startsWith('{') ? lightValue(v.slice(1, -1)) : v;
+};
+const printVars = color
+  .map(t => `    --${t.name}: ${t.name === 'canvas' || t.name === 'surface' ? '#ffffff' : lightValue(t.name)};`)
+  .join('\n');
+const printCss = `@media print {\n  :root, [data-theme] {\n    color-scheme: light;\n${printVars}\n    --shadow-raise: none;\n  }\n}`;
+let css = between(readFileSync(cssPath, 'utf8'), 'backdrops', `:root {\n${backdropCss}\n}`);
+writeFileSync(cssPath, between(css, 'print', printCss));
 
 const jsPath = new URL('components/bundle.js', root);
 writeFileSync(jsPath, between(readFileSync(jsPath, 'utf8'), 'icons', `  var ICONS = ${JSON.stringify(icons, null, 2).replace(/\n/g, '\n  ')};`));

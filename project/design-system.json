@@ -64,7 +64,14 @@
         "close.svg",
         "arrow-right.svg",
         "arrow-left.svg",
-        "alert.svg"
+        "alert.svg",
+        "print.svg",
+        "send.svg",
+        "import.svg",
+        "timer.svg",
+        "settings.svg",
+        "delete.svg",
+        "invoice.svg"
       ],
       "files": {
         "needle.svg": {
@@ -174,6 +181,48 @@
           "blob": "564d04447d76184c51a216c130c5da9e",
           "size": 282,
           "type": "image/svg+xml"
+        },
+        "print.svg": {
+          "name": "print.svg",
+          "blob": "36fb953f130f0b8aa9aff31f64343d36",
+          "size": 305,
+          "type": "image/svg+xml"
+        },
+        "send.svg": {
+          "name": "send.svg",
+          "blob": "d81a53887c2bea9d3b77cd6ad91dc92e",
+          "size": 267,
+          "type": "image/svg+xml"
+        },
+        "import.svg": {
+          "name": "import.svg",
+          "blob": "41822acd27047571a092aa2ce5824be6",
+          "size": 314,
+          "type": "image/svg+xml"
+        },
+        "timer.svg": {
+          "name": "timer.svg",
+          "blob": "9b7c32a869a8490eb073acb4356fc5f1",
+          "size": 281,
+          "type": "image/svg+xml"
+        },
+        "settings.svg": {
+          "name": "settings.svg",
+          "blob": "227feab2d1df0ae8b1a87f2a690f5e7e",
+          "size": 321,
+          "type": "image/svg+xml"
+        },
+        "delete.svg": {
+          "name": "delete.svg",
+          "blob": "c1f84244ba401e3ee7207d001877f58b",
+          "size": 305,
+          "type": "image/svg+xml"
+        },
+        "invoice.svg": {
+          "name": "invoice.svg",
+          "blob": "1fd073bd002caadb5c4e0c60209d19e3",
+          "size": 289,
+          "type": "image/svg+xml"
         }
       }
     }
@@ -184,9 +233,9 @@
     "sections": []
   },
   "lastChange": {
-    "by": "Claude",
-    "at": "2026-09-27T03:17:23Z",
+    "by": "NugMe Studio",
+    "at": "2026-09-27T03:51:35Z",
     "via": "Claude Code",
-    "note": "First version: three themes, nine components, icons, placeholder backdrops"
+    "note": "bs: seven icons, Table, print rules, Cut/Sew/Fit/Finish stage track"
   }
 }

@@ -50,11 +50,13 @@ Use \`<article class="sas-card" data-hue="…">\` with an \`sas-card__art\` and 
 - In Colorful the art fills with the full hue.
 - No dates, counts or descriptions on the card. Open the project for detail.`,
 
-  StageTrack: `The four sewing stages as a threaded row of icons.
+  StageTrack: `A project's stages as a threaded row of icons.
 
-An \`<ol class="sas-stages">\` of four \`sas-stage\` items: scissors, needle, iron and hanger. Each item holds an \`sas-stage__node\` and, except the last, an \`sas-stage__thread\`.
+An \`<ol class="sas-stages">\` of two to six \`sas-stage\` items. Each item holds an \`sas-stage__node\` with one SewAndSo icon and, except the last, an \`sas-stage__thread\`. The page decides the stages.
 
+- Sewing defaults to Cut (scissors), Sew (needle), Fit (tape) and Finish (hanger). A project with no fittings, like a bag, drops Fit. Pressing belongs to Sew and Finish, because sewists press each seam as they go.
 - The consumer sets \`data-state="done"\` or \`data-state="now"\` on each stage and gives every node an \`aria-label\` such as "Sew, in progress".
+- With five or six stages, nodes shrink on phones under 400px wide so the row still fits.
 - Done stages are filled with the hue and joined by solid thread. The current stage is ringed and larger. Stages not started are dashed like basting.
 - Add \`sas-stages--lg\` in a hero.`,
 
@@ -73,6 +75,15 @@ A \`role="radiogroup"\` of \`sas-swatch\` buttons, each with \`role="radio"\`, \
 - The consumer provides the options and listens for the \`sas-change\` event, which carries \`detail.value\`.
 - The chosen chip gets an \`ink\` ring and shows its check. Arrow keys move the choice.
 - Label the group with a visible \`sas-field__label\` and \`aria-labelledby\`.`,
+
+  Table: `Rows of figures, such as materials and costs, on a panel.
+
+Use \`<table class="sas-table">\` inside an \`sas-panel\`, with a \`thead\`, a \`tbody\` and an optional \`tfoot\` for totals.
+
+- The consumer provides the rows and a \`data-label\` on every cell, matching its column heading.
+- Add \`sas-table__num\` to number cells and their headings. Figures right-align and use tabular digits so columns line up.
+- Rows are separated by space, never rule lines.
+- Under 600px wide the headings hide and each row stacks into label and value pairs. The first cell becomes the row's bold name.`,
 
   Workroom: `A full showcase page that puts every component together over the Light, Colorful and Dark backdrops.
 

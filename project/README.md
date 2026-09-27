@@ -76,7 +76,23 @@ With `prefers-reduced-motion`, every transition is removed.
 
 ## Iconography
 
-Eighteen line icons on a 24px grid with a 1.75 stroke and round caps and joins: needle, spool, scissors, pattern, tape, pin, button, fabric, iron, hanger, camera, home, plus, check, close, arrow-left, arrow-right and alert. In markup, write `<svg data-sas-icon="needle"></svg>` and `SewAndSo.hydrate()` fills it. The icon takes its color from the text around it. The four project stages are always scissors (cut), needle (sew), iron (press) and hanger (finish).
+Twenty-five line icons on a 24px grid with a 1.75 stroke and round caps and joins.
+
+- **Sewing:** needle, spool, scissors, pattern, tape, pin, button, fabric, iron and hanger.
+- **Actions:** plus, check, close, delete, send, print, import, arrow-left and arrow-right.
+- **Places and states:** home, camera, timer, settings, invoice and alert.
+
+In markup, write `<svg data-sas-icon="needle"></svg>` and `SewAndSo.hydrate()` fills it. The icon takes its color from the text around it.
+
+A stage track shows two to six stages, each drawn with a SewAndSo icon. Sewing defaults to Cut (scissors), Sew (needle), Fit (tape) and Finish (hanger). Pressing belongs to Sew and Finish, because sewists press each seam as they go.
+
+## Tables
+
+Figures go in a `sas-table` on a panel, in `body` text with tabular digits. Number cells right-align with `sas-table__num`. Rows are separated by `space-4`, not lines. Under 600px wide each row stacks into label and value pairs taken from each cell's `data-label`.
+
+## Print
+
+Printed pages use the Light values on white, whatever theme is on screen. `surface` and `canvas` become white, shadows drop, and text stays `ink`. The backdrop, app bar, theme switch and anything marked `data-print="hide"` are left off. Panels, cards and table rows don't split across pages.
 
 ## Using the system
 

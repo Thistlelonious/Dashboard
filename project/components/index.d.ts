@@ -4,7 +4,8 @@ export type Hue = 'rose' | 'madder' | 'marigold' | 'fern' | 'teal' | 'cornflower
 
 export type IconName =
   | 'needle' | 'spool' | 'scissors' | 'pattern' | 'tape' | 'pin' | 'button' | 'fabric' | 'iron'
-  | 'hanger' | 'camera' | 'home' | 'plus' | 'check' | 'close' | 'arrow-right' | 'arrow-left' | 'alert';
+  | 'hanger' | 'camera' | 'home' | 'plus' | 'check' | 'close' | 'arrow-right' | 'arrow-left' | 'alert'
+  | 'print' | 'send' | 'import' | 'timer' | 'settings' | 'delete' | 'invoice';
 
 export type StageState = 'done' | 'now' | 'todo';
 

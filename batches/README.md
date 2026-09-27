@@ -5,7 +5,7 @@ Build these in the order of this table with `/build-batch <n>`. The SewAndSo bat
 | Batch | File | Status | What you check |
 |---|---|---|---|
 | 1 | `b1-html-skeleton.md` | Done | Every screen opens from the menu, and the back button and reload work. |
-| bs | `bs-sewandso-additions.md` | Built, waiting for your check | SewAndSo shows its new icons, Table, print rules, and the Cut, Sew, Fit, Finish track. |
+| bs | `bs-sewandso-additions.md` | Done | SewAndSo shows its new icons, Table, print rules, and the Cut, Sew, Fit, Finish track. |
 | bd | `bd-design.md` | Not started | Home and every screen use SewAndSo in all three themes and match its Workroom. |
 | 2 | `b2-pricing-core.md` | Not started | The calculator gives the worked-example minutes and prices. |
 | 3 | `b3-projects-and-setup.md` | Not started | Projects, settings, and the checklist survive a reload. |

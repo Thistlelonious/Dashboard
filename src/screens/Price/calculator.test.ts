@@ -1,6 +1,15 @@
 import { assert, expect, test } from "vitest"
+import { domains, type Domain } from "../../pricing/domains/index.ts"
 import { feePresets } from "../../pricing/fees.ts"
-import { calculate, type CalculatorForm, type CalculatorResult } from "./calculator.ts"
+import type { Project } from "../../storage/db.ts"
+import {
+  calculate,
+  formFor,
+  parsedProjectInputs,
+  withStage,
+  type CalculatorForm,
+  type CalculatorResult,
+} from "./calculator.ts"
 
 const [shopifyOnline, , etsy, cashOrDirect] = feePresets
 
@@ -8,7 +17,7 @@ const shopifySkirt: CalculatorForm = {
   domain: "sewing",
   mode: "time",
   fee: shopifyOnline,
-  stagesOff: [],
+  stages: domains.sewing.stages,
   price: "85",
   minutes: "",
   materials: "32",
@@ -21,6 +30,7 @@ const shopifySkirt: CalculatorForm = {
 const cashPie: CalculatorForm = {
   ...shopifySkirt,
   domain: "pie",
+  stages: domains.pie.stages,
   fee: cashOrDirect,
   price: "32",
   materials: "14",
@@ -102,8 +112,10 @@ test("a batch size of 1 shows no minutes per unit", () => {
   expect(rows.map((row) => row[4])).toStrictEqual([undefined, undefined, undefined, undefined])
 })
 
+const [cut, sew, fit, finish] = domains.sewing.stages
+
 test("a stage that is off hands its share to the others", () => {
-  const rows = timed(calculate({ ...shopifySkirt, stagesOff: ["Fit"] })).rows
+  const rows = timed(calculate({ ...shopifySkirt, stages: [cut, sew, finish] })).rows
   expect(rows.map((row) => [row[0], row[2]])).toStrictEqual([
     ["Cut", "19.9"],
     ["Sew", "44.8"],
@@ -198,7 +210,7 @@ test("the starting form is incomplete, not invalid", () => {
     domain: "sewing",
     mode: "time",
     fee: cashOrDirect,
-    stagesOff: [],
+    stages: domains.sewing.stages,
     price: "",
     minutes: "",
     materials: "",
@@ -215,4 +227,90 @@ test("empty materials and overhead count as $0", () => {
   const empty = calculate({ ...shopifySkirt, materials: "", overhead: "" })
   expect(empty).toStrictEqual(withCosts)
   expect(empty).toMatchObject({ kind: "time", laborBudget: 6523 })
+})
+
+test("only sewing's Fit stage is marked removable", () => {
+  const all: Domain[] = Object.values(domains)
+  const removable = all.flatMap((domain) =>
+    domain.stages.filter((stage) => stage.removable === true).map((stage) => `${domain.id} ${stage.name}`),
+  )
+  expect(removable).toEqual(["sewing Fit"])
+})
+
+test("Fit added back returns to its place between Sew and Finish", () => {
+  expect(withStage([cut, sew, finish], fit, domains.sewing.stages)).toStrictEqual([cut, sew, fit, finish])
+})
+
+const savedSkirt: Project = {
+  id: "p1",
+  updatedAt: "2026-09-27T10:00:00.000Z",
+  domain: "sewing",
+  name: "Lined skirt",
+  hue: "plum",
+  price: 8500,
+  batchSize: 1,
+  fee: shopifyOnline,
+  materials: [{ kind: "fixed", name: "Materials", cost: 3200 }],
+  overhead: 500,
+  wage: 2000,
+  margin: 20,
+  stages: [cut, sew, finish],
+  firstBuild: true,
+  built: false,
+  timeLogs: [],
+}
+
+test("a saved project loads into the form as typed text, with batch size 1 left blank", () => {
+  expect(formFor(savedSkirt)).toStrictEqual({
+    domain: "sewing",
+    mode: "time",
+    fee: shopifyOnline,
+    stages: [cut, sew, finish],
+    price: "85.00",
+    minutes: "",
+    materials: "32.00",
+    overhead: "5.00",
+    wage: "20.00",
+    margin: "20",
+    batchSize: "",
+  })
+})
+
+test("a new project's zero price, no materials, and zero overhead load as blank fields", () => {
+  const fresh = formFor({ ...savedSkirt, price: 0, materials: [], overhead: 0, margin: 12.5, batchSize: 6, wage: 1805 })
+  expect(fresh).toMatchObject({ price: "", materials: "", overhead: "", margin: "12.5", batchSize: "6", wage: "18.05" })
+})
+
+test("the form saves every input, with materials as one fixed line", () => {
+  expect(parsedProjectInputs(shopifySkirt)).toStrictEqual({
+    fee: shopifyOnline,
+    stages: domains.sewing.stages,
+    price: 8500,
+    materials: [{ kind: "fixed", name: "Materials", cost: 3200 }],
+    overhead: 500,
+    wage: 2000,
+    margin: 20,
+    batchSize: 1,
+  })
+})
+
+test("blank money fields save as 0 and a blank batch size as 1", () => {
+  expect(parsedProjectInputs({ ...shopifySkirt, price: "", materials: "", overhead: "", batchSize: "" })).toMatchObject({
+    price: 0,
+    materials: [{ kind: "fixed", name: "Materials", cost: 0 }],
+    overhead: 0,
+    batchSize: 1,
+  })
+})
+
+test("a field that doesn't parse is left out, so the project keeps its last good value", () => {
+  const inputs = parsedProjectInputs({ ...shopifySkirt, price: "abc", wage: "", margin: "99", batchSize: "0" })
+  expect(Object.keys(inputs).sort()).toEqual(["fee", "materials", "overhead", "stages"])
+})
+
+test("saving then loading gives back the same form and result", () => {
+  const form: CalculatorForm = { ...shopifySkirt, batchSize: "3", stages: [cut, sew, finish] }
+  const reloaded = formFor({ ...savedSkirt, ...parsedProjectInputs(form) })
+  expect(reloaded).toStrictEqual({ ...form, price: "85.00", materials: "32.00", overhead: "5.00" })
+  expect(calculate(reloaded)).toStrictEqual(calculate(form))
 })

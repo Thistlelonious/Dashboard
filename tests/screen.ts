@@ -34,3 +34,37 @@ export async function expectCleanLayout(
   const result = await runChecker(page, testInfo)
   expect(result.violations, `${label} [${theme}] on ${testInfo.project.name}\n${format(result)}`).toEqual([])
 }
+
+export function field(page: Page, label: string) {
+  return page
+    .locator("label.sas-field")
+    .filter({ has: page.locator(".sas-field__label", { hasText: new RegExp(`^${label}$`) }) })
+}
+
+export async function fill(page: Page, values: Record<string, string>) {
+  for (const [label, value] of Object.entries(values)) {
+    await field(page, label).locator("input").fill(value)
+  }
+}
+
+export async function choose(page: Page, ...options: string[]) {
+  for (const name of options) {
+    const radio = page.getByRole("radio", { name, exact: true })
+    await radio.click()
+    await expect(radio).toHaveAttribute("aria-checked", "true")
+  }
+}
+
+export function stageTable(page: Page) {
+  return page.locator("table.sas-table", { has: page.locator("th", { hasText: "Stage" }) })
+}
+
+export async function stageRows(page: Page) {
+  return stageTable(page)
+    .locator("tbody tr")
+    .evaluateAll((rows) => rows.map((row) => [...row.querySelectorAll("td")].map((cell) => cell.textContent)))
+}
+
+export async function total(page: Page) {
+  return stageTable(page).locator("tfoot td").nth(1).textContent()
+}

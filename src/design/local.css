@@ -1,3 +1,17 @@
 .icon-slot {
   display: contents;
 }
+
+.check-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.check-item input {
+  width: var(--target);
+  height: var(--target);
+  margin: 0;
+  accent-color: var(--primary);
+}

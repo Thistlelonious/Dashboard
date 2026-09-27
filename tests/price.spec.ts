@@ -1,35 +1,5 @@
 import { expect, type Page, test } from "@playwright/test"
-import { expectCleanLayout, open, themes } from "./screen.ts"
-
-function field(page: Page, label: string) {
-  return page
-    .locator("label.sas-field")
-    .filter({ has: page.locator(".sas-field__label", { hasText: new RegExp(`^${label}$`) }) })
-}
-
-async function fill(page: Page, values: Record<string, string>) {
-  for (const [label, value] of Object.entries(values)) {
-    await field(page, label).locator("input").fill(value)
-  }
-}
-
-async function choose(page: Page, ...options: string[]) {
-  for (const name of options) {
-    const radio = page.getByRole("radio", { name, exact: true })
-    await radio.click()
-    await expect(radio).toHaveAttribute("aria-checked", "true")
-  }
-}
-
-function stageTable(page: Page) {
-  return page.locator("table.sas-table", { has: page.locator("th", { hasText: "Stage" }) })
-}
-
-async function stageRows(page: Page) {
-  return stageTable(page)
-    .locator("tbody tr")
-    .evaluateAll((rows) => rows.map((row) => [...row.querySelectorAll("td")].map((cell) => cell.textContent)))
-}
+import { choose, expectCleanLayout, field, fill, open, stageRows, stageTable, themes, total } from "./screen.ts"
 
 async function stageIcons(page: Page) {
   return stageTable(page)
@@ -45,10 +15,6 @@ async function stageIcons(page: Page) {
         return icon ?? null
       }),
     )
-}
-
-async function total(page: Page) {
-  return stageTable(page).locator("tfoot td").nth(1).textContent()
 }
 
 function amount(page: Page, label: string) {

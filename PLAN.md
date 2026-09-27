@@ -202,7 +202,7 @@ type Domain = {
 }
 
 type Hue = "rose" | "madder" | "marigold" | "fern" | "teal" | "cornflower" | "plum"
-type StageTemplate = { name: string; weight: number; waitMin: number; batchable: boolean; icon?: IconName }
+type StageTemplate = { name: string; weight: number; waitMin: number; batchable: boolean; icon?: IconName; removable?: boolean }
 type FeePreset = { name: string; pct: Percent; fixed: Cents }
 
 type UnitFamily = "length" | "weight" | "volume" | "count"
@@ -297,6 +297,7 @@ Each domain is one data file. Adding bookbinding or woodburning later means writ
 | Stages and weights | Cut 20, Sew 45, Fit 15, Finish 20 | Crust 30, Filling 25, Assembly and crimping 20, Baking (hands-on) 10, Cooling and packaging 15 |
 | Stage icons | scissors, needle, tape, hanger | None |
 | Batchable stages | None | Crust, Filling, Baking (hands-on) |
+| Removable stages | Fit | None |
 | Wait minutes | 0 | 0 for now. Chill, bake, and cool times come later. |
 | `cardIcon` | fabric | None |
 | `complianceNotes` | Check each pattern's license before selling what you make from it. | Fruit pies are allowed under California cottage food law. Cream, custard, and meringue pies are not. |
@@ -308,7 +309,7 @@ The stage weights are starting guesses. Build-mode timers replace them with your
 - **Fit** covers fittings and the changes that follow them.
 - **Finish** covers hems, closures, hand stitching, and the final press.
 
-A project without fittings, such as a bag, removes Fit. Stage budgets divide by the sum of the remaining weights, so Cut, Sew, and Finish absorb its share.
+A project without fittings, such as a bag, removes Fit. Stage budgets divide by the sum of the remaining weights, so Cut, Sew, and Finish absorb its share. A stage marked `removable` can be taken out of a project and added back, and it returns to its place in the domain order.
 
 ### Why these sewing stages
 
@@ -338,6 +339,7 @@ Pies stay outside SewAndSo's icon set. They show a plain stage list, and a pie p
 | Rule | Why SewAndSo can't cover it |
 |---|---|
 | `.icon-slot { display: contents; }` | `Icon.tsx` puts the SVG from `SewAndSo.icon()` inside a React `<span>`. SewAndSo styles the SVG and knows nothing of that wrapper, so the wrapper drops out of layout. |
+| `.check-item`, a two-column grid of a checkbox and its text, with the checkbox sized to `--target` and filled with `--primary` | SewAndSo has no checkbox. The Setup checklist needs one, so it uses a native checkbox at the tap-target size, and the text wraps beside it instead of dropping below it. |
 
 ## Setup checklist
 

@@ -3,7 +3,14 @@ import type { Percent } from "../../money.ts"
 import { pie } from "./pie.ts"
 import { sewing } from "./sewing.ts"
 
-export type StageTemplate = { name: string; weight: number; waitMin: number; batchable: boolean; icon?: IconName }
+export type StageTemplate = {
+  name: string
+  weight: number
+  waitMin: number
+  batchable: boolean
+  icon?: IconName
+  removable?: boolean
+}
 
 export type Domain = {
   id: "sewing" | "pie"

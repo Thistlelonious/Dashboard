@@ -8,7 +8,7 @@ Build these in the order of this table with `/build-batch <n>`. The SewAndSo bat
 | bs | `bs-sewandso-additions.md` | Done | SewAndSo shows its new icons, Table, print rules, and the Cut, Sew, Fit, Finish track. |
 | bd | `bd-design.md` | Done | Home and every screen use SewAndSo in all three themes and match its Workroom. |
 | 2 | `b2-pricing-core.md` | Done | The calculator gives the worked-example minutes and prices. |
-| 3 | `b3-projects-and-setup.md` | Not started | Projects, settings, and the checklist survive a reload. |
+| 3 | `b3-projects-and-setup.md` | Done | Projects, settings, and the checklist survive a reload. |
 | 4 | `b4-backup-merge.md` | Not started | A backup merges into a second browser, and the newer edit wins. |
 | 5 | `b5-install-and-deploy.md` | Not started | The GitHub Pages address installs on your phone and works offline. |
 | 6 | `b6-inventory-ledger.md` | Not started | Purchases and adjustments give the right stock and average cost. |

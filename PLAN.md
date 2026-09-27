@@ -325,6 +325,12 @@ coinvoice needs these things that SewAndSo didn't cover when it first shipped. B
 
 Pies stay outside SewAndSo's icon set. They show a plain stage list, and a pie project card shows its hue block with no icon.
 
+`src/design/local.css` holds the rules SewAndSo can't cover. It uses only SewAndSo tokens.
+
+| Rule | Why SewAndSo can't cover it |
+|---|---|
+| `.icon-slot { display: contents; }` | `Icon.tsx` puts the SVG from `SewAndSo.icon()` inside a React `<span>`. SewAndSo styles the SVG and knows nothing of that wrapper, so the wrapper drops out of layout. |
+
 ## Setup checklist
 
 The Setup screen shows a checklist. You can check items off and add your own. It starts with these seeded items:

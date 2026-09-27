@@ -1,5 +1,5 @@
 import { expect, test } from "vitest"
-import { formatCents, percentOf, roundHalfUp, toCents } from "./money.ts"
+import { formatCents, percentOf, roundHalfUp, toCents, toPercent } from "./money.ts"
 
 test.each([
   [892.5, 893],
@@ -28,6 +28,21 @@ test.each([
 
 test.each(["abc", "", "-5", "1.234", "85.", "12,34", "$"])("toCents rejects %j", (text) => {
   expect(toCents(text)).toStrictEqual({ ok: false })
+})
+
+test.each([
+  ["20", 20],
+  ["2.9", 2.9],
+  ["9.50", 9.5],
+  ["0", 0],
+  ["12.34", 12.34],
+  [" 15% ", 15],
+])("toPercent(%j) is %d", (text, percent) => {
+  expect(toPercent(text)).toStrictEqual({ ok: true, percent })
+})
+
+test.each(["abc", "", "-5", "2.955", "20.", ".5", "%", "1,000"])("toPercent rejects %j", (text) => {
+  expect(toPercent(text)).toStrictEqual({ ok: false })
 })
 
 test.each([

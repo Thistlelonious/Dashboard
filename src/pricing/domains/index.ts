@@ -1,8 +1,9 @@
+import type { IconName } from "../../design/sewandso/index.d.ts"
 import type { Percent } from "../../money.ts"
 import { pie } from "./pie.ts"
 import { sewing } from "./sewing.ts"
 
-export type StageTemplate = { name: string; weight: number; waitMin: number; batchable: boolean; icon?: string }
+export type StageTemplate = { name: string; weight: number; waitMin: number; batchable: boolean; icon?: IconName }
 
 export type Domain = {
   id: "sewing" | "pie"
@@ -14,7 +15,7 @@ export type Domain = {
   estimateLaborLabel: string
   taxable: boolean
   complianceNotes: string[]
-  cardIcon?: string
+  cardIcon?: IconName
 }
 
 export type DomainId = Domain["id"]

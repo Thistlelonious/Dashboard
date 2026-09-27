@@ -198,7 +198,7 @@ type Domain = {
 	estimateLaborLabel: string
 	taxable: boolean
 	complianceNotes: string[]
-	cardIcon?: string
+	cardIcon?: IconName
 }
 
 type Hue = "rose" | "madder" | "marigold" | "fern" | "teal" | "cornflower" | "plum"

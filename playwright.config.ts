@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test"
 
-const baseURL = "http://localhost:5173"
+const baseURL = "http://localhost:5173/coinvoice/"
+export const previewURL = "http://localhost:4173/coinvoice/"
 
 export default defineConfig({
   testDir: "./tests",
@@ -15,9 +16,8 @@ export default defineConfig({
     { name: "pixel-7", use: { ...devices["Pixel 7"] } },
     { name: "desktop-1440", use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } } },
   ],
-  webServer: {
-    command: "npm run dev -- --strictPort",
-    url: baseURL,
-    reuseExistingServer: true,
-  },
+  webServer: [
+    { command: "npm run dev -- --strictPort", url: baseURL, reuseExistingServer: true },
+    { command: "npm run build && npm run preview -- --strictPort", url: previewURL, reuseExistingServer: true },
+  ],
 })

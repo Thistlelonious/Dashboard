@@ -4,7 +4,7 @@ import { format, runChecker } from "../../SewAndSo/tests/helpers.mjs"
 export const themes = ["light", "colorful", "dark"] as const
 
 export async function open(page: Page, hash: string) {
-  await page.goto(`/${hash}`)
+  await page.goto(`./${hash}`)
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
   const figtree = await page.evaluate(async () => {
     await document.fonts.ready

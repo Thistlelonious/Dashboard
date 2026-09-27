@@ -1,4 +1,4 @@
-import { expect, type Page, type TestInfo } from "@playwright/test"
+import { expect, type Locator, type Page, type TestInfo } from "@playwright/test"
 import { format, runChecker } from "../../SewAndSo/tests/helpers.mjs"
 
 export const themes = ["light", "colorful", "dark"] as const
@@ -35,15 +35,16 @@ export async function expectCleanLayout(
   expect(result.violations, `${label} [${theme}] on ${testInfo.project.name}\n${format(result)}`).toEqual([])
 }
 
-export function field(page: Page, label: string) {
-  return page
+export function field(scope: Page | Locator, label: string) {
+  const page = "goto" in scope ? scope : scope.page()
+  return scope
     .locator("label.sas-field")
     .filter({ has: page.locator(".sas-field__label", { hasText: new RegExp(`^${label}$`) }) })
 }
 
-export async function fill(page: Page, values: Record<string, string>) {
+export async function fill(scope: Page | Locator, values: Record<string, string>) {
   for (const [label, value] of Object.entries(values)) {
-    await field(page, label).locator("input").fill(value)
+    await field(scope, label).locator("input").fill(value)
   }
 }
 

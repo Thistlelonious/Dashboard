@@ -43,9 +43,9 @@ async function mergeBackup(page: Page, path: string, counts: string) {
   await expect(page.getByRole("status")).toHaveText(`Merged. ${counts}`)
 }
 
-async function cardTitles(page: Page) {
+async function expectCards(page: Page, titles: string[]) {
   await goHome(page)
-  return page.locator("a.sas-card .sas-card__title").allTextContents()
+  await expect(page.locator("a.sas-card .sas-card__title")).toHaveText(titles)
 }
 
 test("backups send, merge into a second browser, and never undo a newer edit or a delete", async ({ page, browser }, testInfo) => {
@@ -85,7 +85,7 @@ test("backups send, merge into a second browser, and never undo a newer edit or 
   await page.getByRole("button", { name: "Save" }).click()
   await expect(page.locator(".sas-heading", { hasText: "Lined skirt v2" })).toBeVisible()
   await mergeBackup(page, first, "0 added, 0 updated, 7 unchanged")
-  expect(await cardTitles(page)).toEqual(["Lined skirt v2", "Apple pie"])
+  await expectCards(page, ["Lined skirt v2", "Apple pie"])
 
   const privateWindow = await browser.newContext()
   const other = await privateWindow.newPage()
@@ -93,7 +93,7 @@ test("backups send, merge into a second browser, and never undo a newer edit or 
   await expect(other.getByRole("checkbox", { name: "Get a California seller's permit from CDTFA." })).toBeChecked()
   await expect(field(other, "Business name").locator("input")).toHaveValue("Thread and Crust")
   await expect(banner(other)).toContainText("No backup yet")
-  expect((await cardTitles(other)).sort()).toEqual(["Apple pie", "Lined skirt"])
+  await expectCards(other, ["Apple pie", "Lined skirt"])
 
   await openCard(page, "Apple pie")
   await page.getByRole("button", { name: "Delete", exact: true }).click()
@@ -102,7 +102,7 @@ test("backups send, merge into a second browser, and never undo a newer edit or 
   const second = testInfo.outputPath("second-backup.json")
   await sendBackup(page, second)
   await mergeBackup(other, second, "0 added, 2 updated, 5 unchanged")
-  expect(await cardTitles(other)).toEqual(["Lined skirt v2"])
+  await expectCards(other, ["Lined skirt v2"])
   await reloadAfterSaves(other)
   await expect(card(other, "Apple pie")).toHaveCount(0)
 
@@ -111,7 +111,7 @@ test("backups send, merge into a second browser, and never undo a newer edit or 
   await chooseBackup(other, stranger)
   await expect(other.getByRole("alert")).toHaveText(notABackup)
   await expect(other.getByRole("button", { name: "Merge", exact: true })).toHaveCount(0)
-  expect(await cardTitles(other)).toEqual(["Lined skirt v2"])
+  await expectCards(other, ["Lined skirt v2"])
   await privateWindow.close()
 })
 

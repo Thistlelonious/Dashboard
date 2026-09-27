@@ -149,6 +149,10 @@ Inventory is a ledger. A purchase adds stock at its landed cost. A use removes s
 - **Units.** Each item has one unit. Units convert within a family: length (yd, in, m, cm), weight (lb, oz, kg, g), volume (cup, tbsp, tsp, fl oz), and count (each). An item can hold one extra conversion across families, such as flour at 1 cup = 4.25 oz.
 - **Projects.** A project's material line is a stock line (an item and a quantity), a planned purchase (a name and an estimated cost), or a fixed line (such as a pattern's cost shared across builds).
 - **Stock use.** Marking a project "Built" records a use for each stock line and freezes those costs on the project. "Undo built" deletes those uses. An adjustment records waste or personal use.
+- **Replay order.** Purchases and uses run in date order, and events on the same date run in the order they were entered. The ledger keeps unrounded cents and rounds half up only when a cost leaves it, for display or when it is frozen.
+- **Short stock.** A use can take more than is on hand. The item then shows "Short by" the missing amount, and the next purchase covers the shortfall at that purchase's own price.
+- **Manual purchases.** "Add purchase" on the Stock screen records one purchase with the `receiptId` `manual-<id>`. A name that matches an existing item, ignoring case, adds to that item, and a blank unit means the item's unit. A new item takes a category, a craft, a unit, and an optional conversion written like `1 cup = 4.25 oz`, with one unit of each family.
+- **Adjustments.** "Adjust" on the Stock screen records a use with the reason `adjustment`, for waste or personal use.
 - **Import.** A receipt import is keyed by its `receiptId`. Importing the same receipt again replaces its purchases, so it never doubles the stock. Before saving, the app shows each line as a new item, an addition to an existing item, or skipped. An existing item matches by name, ignoring case.
 
 ## Documents
